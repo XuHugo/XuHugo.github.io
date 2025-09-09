@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Foundry 环境搭建与 Ethernaut 项目配置 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🛠️-Foundry-环境搭建与-Ethernaut-项目配置"><a href="#🛠️-Foundry-环境搭建与-Ethernaut-项目配置" class="headerlink" title="🛠️ Foundry 环境搭建与 Ethernaut 项目配置"></a>🛠️ Foundry 环境搭建与 Ethernaut 项目配置</h1><blockquote>
+<p>在开始 Ethernaut 安全挑战之前，我们需要搭建一个完整的 Foundry 开发环境。本文将详细介绍从零开始的完整配置流程。</p>
+</blockquote>
+<h2 id="📚-什么是-Foundry"><a href="#📚-什么是-Foundry" class="headerlink" title="📚 什么是 Foundry?"></a>📚 什么是 Foundry?</h2><p><strong>Foundry</strong> 是一个用 Rust 编写的快速、可移植和模块化的以太坊开发工具包，包含：</p>
+<ul>
+<li><strong>Forge</strong>: 测试框架</li>
+<li><strong>Cast</strong>: 瑞士军刀般的 RPC 工具</li>
+<li><strong>Anvil</strong>: 本地测试网络</li>
+<li><strong>Chisel</strong>: Solidity REPL</li>
+</ul>
+<h3 id="与其他工具对比"><a href="#与其他工具对比" class="headerlink" title="与其他工具对比"></a>与其他工具对比</h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>语言</th>
+<th>测试速度</th>
+<th>配置复杂度</th>
+<th>社区支持</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Foundry</strong></td>
+<td>Rust</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐☆☆☆</td>
+<td>⭐⭐⭐⭐☆</td>
+</tr>
+<tr>
+<td>Hardhat</td>
+<td>JavaScript</td>
+<td>⭐⭐⭐☆☆</td>
+<td>⭐⭐⭐☆☆</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Truffle</td>
+<td>JavaScript</td>
+<td>⭐⭐☆☆☆</td>
+<td>⭐⭐⭐⭐☆</td>
+<td>⭐⭐⭐☆☆</td>
+</tr>
+</tbody></table>
+<h2 id="🚀-Foundry-安装"><a href="#🚀-Foundry-安装" class="headerlink" title="🚀 Foundry 安装"></a>🚀 Foundry 安装</h2><h3 id="方法一：使用-Foundryup-推荐"><a href="#方法一：使用-Foundryup-推荐" class="headerlink" title="方法一：使用 Foundryup (推荐)"></a>方法一：使用 Foundryup (推荐)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载并安装 Foundryup</span></span><br><span class="line">curl -L https://foundry.paradigm.xyz | bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新加载 shell 或重启终端</span></span><br><span class="line"><span class="built_in">source</span> ~/.bashrc  <span class="comment"># 或 source ~/.zshrc</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装最新版本的 Foundry</span></span><br><span class="line">foundryup</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证安装</span></span><br><span class="line">forge --version</span><br><span class="line">cast --version</span><br><span class="line">anvil --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法二：从源码编译"><a href="#方法二：从源码编译" class="headerlink" title="方法二：从源码编译"></a>方法二：从源码编译</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆 Foundry 仓库</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/foundry-rs/foundry</span><br><span class="line"><span class="built_in">cd</span> foundry</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译安装 (需要 Rust 环境)</span></span><br><span class="line">cargo build --release</span><br><span class="line">cargo install --path ./crates/forge --bin forge</span><br><span class="line">cargo install --path ./crates/cast --bin cast</span><br><span class="line">cargo install --path ./crates/anvil --bin anvil</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法三：使用包管理器"><a href="#方法三：使用包管理器" class="headerlink" title="方法三：使用包管理器"></a>方法三：使用包管理器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># macOS (Homebrew)</span></span><br><span class="line">brew install foundry</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ubuntu/Debian (需要添加 PPA)</span></span><br><span class="line"><span class="comment"># 暂不支持，建议使用方法一</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Windows (需要 WSL)</span></span><br><span class="line"><span class="comment"># 在 WSL 中执行方法一的步骤</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="📁-Ethernaut-项目结构"><a href="#📁-Ethernaut-项目结构" class="headerlink" title="📁 Ethernaut 项目结构"></a>📁 Ethernaut 项目结构</h2><h3 id="克隆项目"><a href="#克隆项目" class="headerlink" title="克隆项目"></a>克隆项目</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆 Ethernaut Foundry Solutions 项目</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/XuHugo/Ethernaut-Foundry-Solutions.git</span><br><span class="line"><span class="built_in">cd</span> Ethernaut-Foundry-Solutions</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看项目结构</span></span><br><span class="line">tree -L 2</span><br></pre></td></tr></table></figure>
+
+<h3 id="项目目录结构"><a href="#项目目录结构" class="headerlink" title="项目目录结构"></a>项目目录结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Ethernaut-Foundry-Solutions/</span><br><span class="line">├── foundry.toml          # Foundry 配置文件</span><br><span class="line">├── .gitmodules          # Git 子模块配置</span><br><span class="line">├── README.md            # 项目说明</span><br><span class="line">├── lib/                 # 依赖库</span><br><span class="line">│   ├── forge-std/       # Foundry 标准库</span><br><span class="line">│   └── openzeppelin-contracts/  # OpenZeppelin 合约库</span><br><span class="line">├── src/                 # 源码目录</span><br><span class="line">│   ├── Fallback.sol     # 关卡原始合约</span><br><span class="line">│   ├── Fallout.sol</span><br><span class="line">│   └── ...</span><br><span class="line">├── test/                # 测试目录</span><br><span class="line">│   ├── FallbackTest.sol # 攻击测试合约</span><br><span class="line">│   ├── FalloutTest.sol</span><br><span class="line">│   └── ...</span><br><span class="line">├── script/              # 部署脚本</span><br><span class="line">└── solutions/           # 解题说明文档</span><br><span class="line">    ├── 01_Fallback_zh.md</span><br><span class="line">    └── ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="⚙️-项目配置"><a href="#⚙️-项目配置" class="headerlink" title="⚙️ 项目配置"></a>⚙️ 项目配置</h2><h3 id="Foundry-配置文件"><a href="#Foundry-配置文件" class="headerlink" title="Foundry 配置文件"></a>Foundry 配置文件</h3><p>查看 <code>foundry.toml</code> 配置：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[profile.default]</span></span><br><span class="line"><span class="attr">src</span> = <span class="string">&quot;src&quot;</span></span><br><span class="line"><span class="attr">out</span> = <span class="string">&quot;out&quot;</span></span><br><span class="line"><span class="attr">libs</span> = [<span class="string">&quot;lib&quot;</span>]</span><br><span class="line"><span class="attr">solc</span> = <span class="string">&quot;0.8.19&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Etherscan API 配置 (可选)</span></span><br><span class="line"><span class="section">[etherscan]</span></span><br><span class="line"><span class="attr">mainnet</span> = &#123; key = <span class="string">&quot;$&#123;API_KEY_ETHERSCAN&#125;&quot;</span> &#125;</span><br><span class="line"><span class="attr">sepolia</span> = &#123; key = <span class="string">&quot;$&#123;API_KEY_ETHERSCAN&#125;&quot;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># RPC 端点配置</span></span><br><span class="line"><span class="section">[rpc_endpoints]</span></span><br><span class="line"><span class="attr">mainnet</span> = <span class="string">&quot;https://rpc.ankr.com/eth&quot;</span></span><br><span class="line"><span class="attr">sepolia</span> = <span class="string">&quot;https://rpc.ankr.com/eth_sepolia&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装项目依赖</span></span><br><span class="line">forge install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 手动安装特定依赖 (如果需要)</span></span><br><span class="line">forge install openzeppelin/openzeppelin-contracts</span><br><span class="line">forge install foundry-rs/forge-std</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新依赖到最新版本</span></span><br><span class="line">forge update</span><br></pre></td></tr></table></figure>
+
+<h2 id="🧪-基本使用"><a href="#🧪-基本使用" class="headerlink" title="🧪 基本使用"></a>🧪 基本使用</h2><h3 id="编译合约"><a href="#编译合约" class="headerlink" title="编译合约"></a>编译合约</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译所有合约</span></span><br><span class="line">forge build</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译特定合约</span></span><br><span class="line">forge build src/Fallback.sol</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看编译输出</span></span><br><span class="line"><span class="built_in">ls</span> out/</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 运行所有测试</span></span><br><span class="line">forge <span class="built_in">test</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行特定测试合约</span></span><br><span class="line">forge <span class="built_in">test</span> --match-contract FallbackTest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 详细输出 (多个 v 增加详细程度)</span></span><br><span class="line">forge <span class="built_in">test</span> --match-contract FallbackTest -vvv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行特定测试函数</span></span><br><span class="line">forge <span class="built_in">test</span> --match-test testFallbackExploit -vvv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示 gas 报告</span></span><br><span class="line">forge <span class="built_in">test</span> --gas-report</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-Anvil-本地测试网"><a href="#使用-Anvil-本地测试网" class="headerlink" title="使用 Anvil 本地测试网"></a>使用 Anvil 本地测试网</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动本地测试网 (新终端)</span></span><br><span class="line">anvil</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在另一个终端中，针对本地网络运行测试</span></span><br><span class="line">forge <span class="built_in">test</span> --fork-url http://localhost:8545</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔧-常用-Foundry-命令"><a href="#🔧-常用-Foundry-命令" class="headerlink" title="🔧 常用 Foundry 命令"></a>🔧 常用 Foundry 命令</h2><h3 id="Forge-命令"><a href="#Forge-命令" class="headerlink" title="Forge 命令"></a>Forge 命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 项目管理</span></span><br><span class="line">forge init my-project          <span class="comment"># 初始化新项目</span></span><br><span class="line">forge build                    <span class="comment"># 编译合约</span></span><br><span class="line">forge clean                    <span class="comment"># 清理编译输出</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试相关</span></span><br><span class="line">forge <span class="built_in">test</span>                     <span class="comment"># 运行测试</span></span><br><span class="line">forge <span class="built_in">test</span> --watch            <span class="comment"># 监视文件变化并自动测试</span></span><br><span class="line">forge coverage                <span class="comment"># 代码覆盖率报告</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 依赖管理</span></span><br><span class="line">forge install &lt;dependency&gt;     <span class="comment"># 安装依赖</span></span><br><span class="line">forge remove &lt;dependency&gt;     <span class="comment"># 移除依赖</span></span><br><span class="line">forge update                  <span class="comment"># 更新依赖</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码格式化</span></span><br><span class="line">forge <span class="built_in">fmt</span>                     <span class="comment"># 格式化 Solidity 代码</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Cast-命令"><a href="#Cast-命令" class="headerlink" title="Cast 命令"></a>Cast 命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询区块链信息</span></span><br><span class="line">cast block-number             <span class="comment"># 获取最新区块号</span></span><br><span class="line">cast balance &lt;address&gt;        <span class="comment"># 查询地址余额</span></span><br><span class="line">cast storage &lt;address&gt; &lt;slot&gt; <span class="comment"># 读取存储槽</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用合约</span></span><br><span class="line">cast call &lt;address&gt; &lt;signature&gt; [args]  <span class="comment"># 只读调用</span></span><br><span class="line">cast send &lt;address&gt; &lt;signature&gt; [args]  <span class="comment"># 状态变更调用</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 工具函数</span></span><br><span class="line">cast keccak <span class="string">&quot;function_signature()&quot;</span>      <span class="comment"># 计算函数选择器</span></span><br><span class="line">cast abi-encode <span class="string">&quot;func(uint256)&quot;</span> 123     <span class="comment"># ABI 编码</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Anvil-命令"><a href="#Anvil-命令" class="headerlink" title="Anvil 命令"></a>Anvil 命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动本地测试网</span></span><br><span class="line">anvil                         <span class="comment"># 默认配置</span></span><br><span class="line">anvil --port 8545            <span class="comment"># 指定端口</span></span><br><span class="line">anvil --accounts 20          <span class="comment"># 指定账户数量</span></span><br><span class="line">anvil --balance 1000         <span class="comment"># 每个账户初始余额 (ETH)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从特定状态分叉</span></span><br><span class="line">anvil --fork-url https://rpc.ankr.com/eth</span><br><span class="line">anvil --fork-url https://rpc.ankr.com/eth --fork-block-number 19000000</span><br></pre></td></tr></table></figure>
+
+<h2 id="🎯-Ethernaut-专用配置"><a href="#🎯-Ethernaut-专用配置" class="headerlink" title="🎯 Ethernaut 专用配置"></a>🎯 Ethernaut 专用配置</h2><h3 id="环境变量配置"><a href="#环境变量配置" class="headerlink" title="环境变量配置"></a>环境变量配置</h3><p>创建 <code>.env</code> 文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .env 文件</span></span><br><span class="line">ETHERSCAN_API_KEY=your_etherscan_api_key</span><br><span class="line">MAINNET_RPC_URL=https://rpc.ankr.com/eth</span><br><span class="line">SEPOLIA_RPC_URL=https://rpc.ankr.com/eth_sepolia</span><br><span class="line">PRIVATE_KEY=your_private_key_for_testing</span><br></pre></td></tr></table></figure>
+
+<p>加载环境变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 shell 中加载</span></span><br><span class="line"><span class="built_in">source</span> .<span class="built_in">env</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 或在 foundry.toml 中配置自动加载</span></span><br><span class="line">[profile.default]</span><br><span class="line">env_file = <span class="string">&quot;.env&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="测试模板"><a href="#测试模板" class="headerlink" title="测试模板"></a>测试模板</h3><p>创建标准测试文件模板：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;../src/TargetContract.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract TargetContractTest is Test &#123;</span><br><span class="line">    TargetContract public instance;</span><br><span class="line">    address public attacker = makeAddr(&quot;attacker&quot;);</span><br><span class="line">    </span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        // 部署目标合约</span><br><span class="line">        instance = new TargetContract();</span><br><span class="line">        </span><br><span class="line">        // 初始化攻击者账户</span><br><span class="line">        vm.deal(attacker, 10 ether);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testExploit() public &#123;</span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        // 攻击逻辑</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">        </span><br><span class="line">        // 验证攻击成功</span><br><span class="line">        assertTrue(/* 验证条件 */);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🐛-常见问题解决"><a href="#🐛-常见问题解决" class="headerlink" title="🐛 常见问题解决"></a>🐛 常见问题解决</h2><h3 id="编译错误"><a href="#编译错误" class="headerlink" title="编译错误"></a>编译错误</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清理并重新编译</span></span><br><span class="line">forge clean &amp;&amp; forge build</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查 Solidity 版本兼容性</span></span><br><span class="line">forge build --force</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看详细错误信息</span></span><br><span class="line">forge build --verbose</span><br></pre></td></tr></table></figure>
+
+<h3 id="依赖问题"><a href="#依赖问题" class="headerlink" title="依赖问题"></a>依赖问题</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 重新安装依赖</span></span><br><span class="line"><span class="built_in">rm</span> -rf lib/</span><br><span class="line">forge install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查 Git 子模块状态</span></span><br><span class="line">git submodule status</span><br><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试失败"><a href="#测试失败" class="headerlink" title="测试失败"></a>测试失败</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 增加详细输出</span></span><br><span class="line">forge <span class="built_in">test</span> -vvvv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用调试器</span></span><br><span class="line">forge <span class="built_in">test</span> --debug &lt;test_function&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查 gas 使用情况</span></span><br><span class="line">forge <span class="built_in">test</span> --gas-report</span><br></pre></td></tr></table></figure>
+
+<h2 id="📚-进阶配置"><a href="#📚-进阶配置" class="headerlink" title="📚 进阶配置"></a>📚 进阶配置</h2><h3 id="多版本-Solidity-支持"><a href="#多版本-Solidity-支持" class="headerlink" title="多版本 Solidity 支持"></a>多版本 Solidity 支持</h3><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># foundry.toml</span></span><br><span class="line"><span class="section">[profile.default]</span></span><br><span class="line"><span class="attr">solc</span> = <span class="string">&quot;0.8.19&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[profile.legacy]</span></span><br><span class="line"><span class="attr">solc</span> = <span class="string">&quot;0.6.12&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义测试配置"><a href="#自定义测试配置" class="headerlink" title="自定义测试配置"></a>自定义测试配置</h3><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[profile.default.fuzz]</span></span><br><span class="line"><span class="attr">runs</span> = <span class="number">1000</span></span><br><span class="line"><span class="attr">max_test_rejects</span> = <span class="number">65536</span></span><br><span class="line"></span><br><span class="line"><span class="section">[profile.default.invariant]</span></span><br><span class="line"><span class="attr">runs</span> = <span class="number">256</span></span><br><span class="line"><span class="attr">depth</span> = <span class="number">32</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Gas-优化设置"><a href="#Gas-优化设置" class="headerlink" title="Gas 优化设置"></a>Gas 优化设置</h3><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[profile.default.optimizer]</span></span><br><span class="line"><span class="attr">enabled</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">runs</span> = <span class="number">200</span></span><br><span class="line"></span><br><span class="line"><span class="section">[profile.default.model_checker]</span></span><br><span class="line"><span class="attr">contracts</span> = &#123; <span class="string">&quot;/path/to/project/src/Contract.sol&quot;</span> = [ <span class="string">&quot;Contract&quot;</span> ] &#125;</span><br><span class="line"><span class="attr">engine</span> = <span class="string">&quot;chc&quot;</span></span><br><span class="line"><span class="attr">targets</span> = [ <span class="string">&quot;assert&quot;</span>, <span class="string">&quot;underflow&quot;</span>, <span class="string">&quot;overflow&quot;</span>, <span class="string">&quot;divByZero&quot;</span> ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="🎓-总结"><a href="#🎓-总结" class="headerlink" title="🎓 总结"></a>🎓 总结</h2><p>现在您已经完成了 Foundry 开发环境的搭建，可以开始 Ethernaut 安全挑战的学习之旅了！</p>
+<h3 id="下一步："><a href="#下一步：" class="headerlink" title="下一步："></a>下一步：</h3><ol>
+<li><strong>熟悉 Foundry 基本命令</strong></li>
+<li><strong>运行第一个测试</strong>: <code>forge test --match-contract FallbackTest -vvv</code></li>
+<li><strong>开始学习</strong>: <a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1 - Fallback</a></li>
+</ol>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/">Foundry 官方文档</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/foundry-rs/foundry">Foundry GitHub</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-01-fallback/">下一篇: Level 1 - Fallback</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+</ul>
+<hr>
+<p><em>工欲善其事，必先利其器。掌握好工具，才能更好地学习智能合约安全。</em> 🔧</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%BC%80%E5%8F%91/">Web3开发</a> <a class="category-link" href="/categories/Web3%E5%BC%80%E5%8F%91/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">工具配置</a> <a class="category-link" href="/categories/Web3%E5%BC%80%E5%8F%91/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/Web3%E5%BC%80%E5%8F%91/" rel="tag">#Web3开发</a> <a class="tag-none-link" href="/tags/%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/" rel="tag">#测试框架</a> <a class="tag-none-link" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">#环境搭建</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

