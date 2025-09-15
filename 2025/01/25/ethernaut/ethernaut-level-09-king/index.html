@@ -179,7 +179,7 @@ function sidebar_toggle() {
 <p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/9">Ethernaut Level 9 - King</a><br><strong>攻击类型</strong>: 拒绝服务攻击 (DoS)<br><strong>难度</strong>: ⭐⭐⭐⭐☆</p>
 </blockquote>
 <h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>谁出资更高的时候，谁就成为 king，目标是让自己成为 king 之后，别人无法夺取王位。换句话说，我们必须成为王者并一直保持国王，然后打破游戏。</p>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel9.svg" alt="King Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel9.svg" alt="King Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/9-king-requirements.webp" alt="King Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="transfer-函数的特性"><a href="#transfer-函数的特性" class="headerlink" title="transfer() 函数的特性"></a>transfer() 函数的特性</h3><p>我们需要理解 <code>transfer</code>（现在基本被弃用）是如何在 Solidity 中工作的：</p>
 <ul>
 <li>如果 <code>transfer</code> 失败，此函数抛出错误，但不返回布尔值</li>

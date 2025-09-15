@@ -183,7 +183,7 @@ function sidebar_toggle() {
 <li>它的运行时字节码（<code>runtime bytecode</code>）大小不能超过10个字节。</li>
 <li>当调用它的 <code>whatIsTheMeaningOfLife()</code> 函数时，必须返回 <code>42</code>。</li>
 </ol>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel18.svg" alt="Magic Number Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel18.svg" alt="Magic Number Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/18-magicNumber-requirements.webp" alt="Magic Number Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p>这个挑战将我们带入EVM的底层。使用Solidity编写一个返回42的函数非常简单，但编译后的字节码会远远超过10字节的限制，因为它包含了函数调度器、安全检查等大量额外代码。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 编译后字节码会很长，无法通过关卡</span><br><span class="line">contract NormalSolver &#123;</span><br><span class="line">    function whatIsTheMeaningOfLife() public pure returns (uint256) &#123;</span><br><span class="line">        return 42;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

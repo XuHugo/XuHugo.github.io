@@ -179,7 +179,7 @@ function sidebar_toggle() {
 <p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/24">Ethernaut Level 24 - Puzzle Wallet</a><br><strong>攻击类型</strong>: 存储布局冲突 &#x2F; 逻辑漏洞<br><strong>难度</strong>: ⭐⭐⭐⭐⭐</p>
 </blockquote>
 <h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>本关的目标是成为 <code>PuzzleProxy</code> 合约的 <code>admin</code>。</p>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel24.svg" alt="Puzzle Wallet Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel24.svg" alt="Puzzle Wallet Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/24-puzzle-requirements.webp" alt="Puzzle Wallet Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p>这是一个涉及代理合约（Proxy）的复杂挑战，包含了多个漏洞的组合利用。我们需要分步解决几个子问题。</p>
 <h3 id="漏洞-1-代理存储布局冲突"><a href="#漏洞-1-代理存储布局冲突" class="headerlink" title="漏洞 1: 代理存储布局冲突"></a>漏洞 1: 代理存储布局冲突</h3><p>首先，我们检查 <code>PuzzleProxy</code> (代理) 和 <code>PuzzleWallet</code> (逻辑) 合约的存储布局。</p>
 <p><strong><code>PuzzleProxy</code> 的存储:</strong></p>

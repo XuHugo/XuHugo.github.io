@@ -179,7 +179,7 @@ function sidebar_toggle() {
 <p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/19">Ethernaut Level 19 - Alien Codex</a><br><strong>攻击类型</strong>: 存储操纵 &#x2F; 整数下溢<br><strong>难度</strong>: ⭐⭐⭐⭐⭐</p>
 </blockquote>
 <h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>本关的目标是获取 <code>AlienCodex</code> 合约的所有权。这是一个继承了 <code>Ownable</code> 的合约，<code>owner</code> 存储在 slot 0。</p>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel19.svg" alt="Alien Codex Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel19.svg" alt="Alien Codex Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/19-alien-requirements.webp" alt="Alien Codex Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p><code>AlienCodex</code> 合约使用了一个旧的 Solidity 版本 (<code>^0.5.0</code>)，这意味着整数操作不会进行溢出检查。这是本关的核心漏洞。合约的存储布局如下：</p>
 <table>
 <thead>

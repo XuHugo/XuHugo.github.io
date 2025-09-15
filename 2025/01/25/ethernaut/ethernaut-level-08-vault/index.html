@@ -179,7 +179,7 @@ function sidebar_toggle() {
 <p><strong>关卡链接</strong>: <a target="_blank" rel="noopener" href="https://ethernaut.openzeppelin.com/level/8">Ethernaut Level 8 - Vault</a><br><strong>攻击类型</strong>: 私有变量读取<br><strong>难度</strong>: ⭐⭐⭐☆☆</p>
 </blockquote>
 <h2 id="📋-挑战目标"><a href="#📋-挑战目标" class="headerlink" title="📋 挑战目标"></a>📋 挑战目标</h2><p>要 unlock 这个合约账户，也就是要找到 password。挑战的关键在于理解区块链上没有真正的”私有”数据，所有状态变量都可以被读取。</p>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel8.svg" alt="Vault Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel8.svg" alt="Vault Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/8-vault-requirements.webp" alt="Vault Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="存储机制-Storage"><a href="#存储机制-Storage" class="headerlink" title="存储机制 (Storage)"></a>存储机制 (Storage)</h3><p>我们需要理解 EVM 中存储的布局以及原理（使用 32 字节大小的插槽）和 JSON RPC 函数 <code>eth_getStorageAt</code>。</p>
 <p>EVM 的数据都存在 32 字节槽中：</p>
 <ul>

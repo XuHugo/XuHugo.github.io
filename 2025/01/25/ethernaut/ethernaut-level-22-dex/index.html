@@ -186,7 +186,7 @@ function sidebar_toggle() {
 </ul>
 </li>
 </ul>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel22.svg" alt="Dex Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel22.svg" alt="Dex Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/22-dex-requirements.webp" alt="Dex Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p>这个 <code>Dex</code> 合约是一个极简的去中心化交易所，其核心漏洞在于它的价格计算函数 <code>getSwapPrice()</code>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function getSwapPrice(address from, address to, uint amount) public view returns(uint)&#123;</span><br><span class="line">    return((amount * IERC20(to).balanceOf(address(this))) / IERC20(from).balanceOf(address(this)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

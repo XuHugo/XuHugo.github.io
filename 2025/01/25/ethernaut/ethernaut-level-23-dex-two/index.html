@@ -186,7 +186,7 @@ function sidebar_toggle() {
 </ul>
 </li>
 </ul>
-<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel23.svg" alt="Dex Two Requirements"></p>
+<p><img src="https://ethernaut.openzeppelin.com/imgs/BigLevel23.svg" alt="Dex Two Requirements"><br><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/23-dexTwo-requirements.webp" alt="Dex Two Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><p><code>DexTwo</code> 合约的代码与上一关的 <code>Dex</code> 几乎完全相同，但有一个微小却致命的改动。在 <code>swap</code> 函数中，一行关键的验证代码被移除了：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// This line was present in Dex, but is missing in DexTwo</span><br><span class="line">// require((from == token1 &amp;&amp; to == token2) || (from == token2 &amp;&amp; to == token1), &quot;Invalid tokens&quot;);</span><br></pre></td></tr></table></figure>
 

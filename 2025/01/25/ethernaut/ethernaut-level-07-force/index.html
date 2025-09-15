@@ -182,6 +182,7 @@ function sidebar_toggle() {
 <li><strong>向合约发送以太币</strong> - 让 <code>Force</code> 合约的余额大于 0</li>
 <li><strong>绕过接收限制</strong> - 合约没有 payable 函数或 fallback</li>
 </ol>
+<p><img src="https://github.com/XuHugo/Ethernaut-Foundry-Solutions/raw/main/imgs/requirements/7-force-requirements.webp" alt="Force Challenge"></p>
 <h2 id="🔍-漏洞分析"><a href="#🔍-漏洞分析" class="headerlink" title="🔍 漏洞分析"></a>🔍 漏洞分析</h2><h3 id="合约源码分析"><a href="#合约源码分析" class="headerlink" title="合约源码分析"></a>合约源码分析</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract Force &#123;/*</span><br><span class="line">                   MEOW ?</span><br><span class="line">         /\_/\   /</span><br><span class="line">    ____/ o o \</span><br><span class="line">  /~____  =ø= /</span><br><span class="line"> (______)__m_m)</span><br><span class="line">*/&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>关键问题</strong>：</p>
