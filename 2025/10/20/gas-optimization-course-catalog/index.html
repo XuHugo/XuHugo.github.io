@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+
+    
+      <link rel="icon" href="/favicon.png" />
+    
+
+    <title>
+        
+          Gas 优化大师课程 - 完整目录导航 - Kent&#39;s Blog
+        
+    </title>
+
+    <!-- Spectre.css framework -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.5.9/spectre-icons.min.css">
+
+    <!-- theme css & js -->
+    
+<link rel="stylesheet" href="/css/book.css">
+
+    
+<script src="/js/book.js"></script>
+
+
+    <!-- tocbot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+    
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+    
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zooming/2.1.1/zooming.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const zooming = new Zooming()
+    zooming.listen('.book-content img')
+})
+</script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="book-container">
+  <div class="book-sidebar">
+    <div class="book-brand">
+  <a href="/">
+    <img src="/favicon.png">
+    <span>KENT&#39;S BLOG</span>
+  </a>
+</div>
+    <div id="menu" class="book-menu hide">
+  <h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li><a href="/">首页</a></li>
+<li><a href="/archives">文章归档</a></li>
+<li><a href="/categories">分类浏览</a> </li>
+<li><a href="/tags">标签云</a></li>
+</ul>
+<h2 id="⛽-Gas-优化大师"><a href="#⛽-Gas-优化大师" class="headerlink" title="⛽ Gas 优化大师"></a>⛽ Gas 优化大师</h2><ul>
+<li><a href="/2025/09/12/gas-optimization-master-course/">Gas Optimization Master Course</a></li>
+<li><a href="/2025/10/20/gas-optimization-course-catalog/">课程目录导航</a></li>
+</ul>
+<h2 id="🔗-Reth-公链开发"><a href="#🔗-Reth-公链开发" class="headerlink" title="🔗 Reth 公链开发"></a>🔗 Reth 公链开发</h2><ul>
+<li><a href="/categories/Reth%E5%BC%80%E5%8F%91">Reth 架构深度解析</a></li>
+<li><a href="/tags/Rust%E5%8C%BA%E5%9D%97%E9%93%BE">Rust + Ethereum 开发指南</a></li>
+<li><a href="/tags/%E6%89%A7%E8%A1%8C%E5%B1%82">自定义执行层实现</a></li>
+<li><a href="/tags/Layer2">Layer2 解决方案开发</a></li>
+</ul>
+<h2 id="🎯-MEV-前沿研究"><a href="#🎯-MEV-前沿研究" class="headerlink" title="🎯 MEV 前沿研究"></a>🎯 MEV 前沿研究</h2><ul>
+<li><a href="/categories/MEV%E7%A0%94%E7%A9%B6">MEV 基础概念</a></li>
+<li><a href="/tags/%E5%A5%97%E5%88%A9">套利策略分析</a></li>
+<li><a href="/tags/%E5%8C%BA%E5%9D%97%E6%9E%84%E5%BB%BA">区块构建优化</a></li>
+<li><a href="/tags/MEV%E6%9C%BA%E5%99%A8%E4%BA%BA">MEV Bot 开发实战</a></li>
+<li><a href="/tags/%E9%97%AA%E7%94%B5%E8%B4%B7">闪电贷套利策略</a></li>
+</ul>
+<h2 id="⚡-高性能区块链"><a href="#⚡-高性能区块链" class="headerlink" title="⚡ 高性能区块链"></a>⚡ 高性能区块链</h2><ul>
+<li><a href="/categories/%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行引擎</a></li>
+</ul>
+<h2 id="🛡️-Ethernaut-Foundry-系列"><a href="#🛡️-Ethernaut-Foundry-系列" class="headerlink" title="🛡️ Ethernaut&amp;Foundry 系列"></a>🛡️ Ethernaut&amp;Foundry 系列</h2><ul>
+<li><a href="/2025/01/25/ethernaut/ethernaut-foundry-solutions-series/">系列总览</a></li>
+<li><a href="/2025/01/25/ethernaut/foundry-setup-guide/">Foundry 环境搭建</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-01-fallback/">Level 1: Fallback</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-02-fallout/">Level 2: Fallout</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-03-coinflip/">Level 3: Coin Flip</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-04-telephone/">Level 4: Telephone</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-05-token/">Level 5: Token</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-06-delegation/">Level 6: Delegation</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-07-force/">Level 7: Force</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-08-vault/">Level 8: Vault</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-09-king/">Level 9: King</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-10-reentrancy/">Level 10: Re-entrancy</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-11-elevator/">Level 11: Elevator</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-12-privacy/">Level 12: Privacy</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-13-gatekeeper-one/">Level 13: Gatekeeper One</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-14-gatekeeper-two/">Level 14: Gatekeeper Two</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-15-naught-coin/">Level 15: Naught Coin</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-16-preservation/">Level 16: Preservation</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-17-recovery/">Level 17: Recovery</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-18-magic-number/">Level 18: Magic Number</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-19-alien-codex/">Level 19: Alien Codex</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-20-denial/">Level 20: Denial</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-21-shop/">Level 21: Shop</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-22-dex/">Level 22: Dex</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-23-dex-two/">Level 23: Dex Two</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-24-puzzle-wallet/">Level 24: Puzzle Wallet</a></li>
+<li><a href="/2025/01/25/ethernaut/ethernaut-level-25-motorbike/">Level 25: Motorbike</a></li>
+</ul>
+<h2 id="个人页面"><a href="#个人页面" class="headerlink" title="个人页面"></a>个人页面</h2><ul>
+<li><a href="/about">关于我</a></li>
+<li><a href="/repository">项目展示</a></li>
+<li><a href="/books">书单推荐</a></li>
+<li><a href="/links">友情链接</a></li>
+</ul>
+
+</div>
+
+
+<script src="/js/book-menu.js"></script>
+
+  </div>
+
+  <div class="sidebar-toggle" onclick="sidebar_toggle()" onmouseover="add_inner()" onmouseleave="remove_inner()">
+  <div class="sidebar-toggle-inner"></div>
+</div>
+
+<script>
+function add_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.add('show')  
+}
+
+function remove_inner() {
+  let inner = document.querySelector('.sidebar-toggle-inner')
+  inner.classList.remove('show')
+}
+
+function sidebar_toggle() {
+    let sidebar_toggle = document.querySelector('.sidebar-toggle')
+    let sidebar = document.querySelector('.book-sidebar')
+    let content = document.querySelector('.off-canvas-content')
+    if (sidebar_toggle.classList.contains('extend')) { // show
+        sidebar_toggle.classList.remove('extend')
+        sidebar.classList.remove('hide')
+        content.classList.remove('extend')
+    }
+    else { // hide
+        sidebar_toggle.classList.add('extend')
+        sidebar.classList.add('hide')
+        content.classList.add('extend')
+    }
+}
+</script>
+
+  <div class="off-canvas-content">
+    <div class="columns">
+      <div class="column col-10 col-lg-12">
+        <div class="book-navbar">
+          <!-- For Responsive Layout -->
+
+<header class="navbar">
+  <section class="navbar-section">
+    <a onclick="open_sidebar()">
+      <i class="icon icon-menu"></i>
+    </a>
+  </section>
+</header>
+
+        </div>
+        <div class="book-content">
+          <div class="book-post">
+  <h1 id="🚀-Gas-优化大师课程-完整目录导航"><a href="#🚀-Gas-优化大师课程-完整目录导航" class="headerlink" title="🚀 Gas 优化大师课程 - 完整目录导航"></a>🚀 Gas 优化大师课程 - 完整目录导航</h1><blockquote>
+<p>本课程将带你从 Gas 优化的基础概念到高级技巧，系统化掌握智能合约性能优化的核心技能</p>
+</blockquote>
+<hr>
+<h2 id="📁-课程结构"><a href="#📁-课程结构" class="headerlink" title="📁 课程结构"></a>📁 课程结构</h2><h3 id="🔧-Basics-基础知识"><a href="#🔧-Basics-基础知识" class="headerlink" title="🔧 Basics (基础知识)"></a>🔧 Basics (基础知识)</h3><p>Gas也是一种奖励高效开发的机制。</p>
+<ul>
+<li><strong><a href="assembly/Address0.md">GasFee.md</a></strong> - GasFee计算方法</li>
+<li><strong><a href="assembly/AssemblyErr.md">Gas.md</a></strong> - Gas 常量：操作成本 </li>
+<li><strong><a href="assembly/Balance.md">Storage.md</a></strong> - Storage&amp;Transient计算</li>
+<li><strong><a href="assembly/MathOpt.md">Memory.md</a></strong> - Memory计算</li>
+<li><strong><a href="assembly/MemoryExp.md">Calldata.md</a></strong> - Calldata计算</li>
+<li><strong><a href="assembly/MathOpt.md">Yul.md</a></strong> - Yul介绍</li>
+<li><strong><a href="assembly/MemoryExp.md">Foundry.md</a></strong> - Foundry介绍</li>
+</ul>
+<h3 id="🔧-Assembly-汇编优化"><a href="#🔧-Assembly-汇编优化" class="headerlink" title="🔧 Assembly (汇编优化)"></a>🔧 Assembly (汇编优化)</h3><p>使用内联汇编进行底层优化，直接操作EVM指令以获得最佳性能。</p>
+<ul>
+<li><strong><a href="assembly/Address0.md">Address0.md</a></strong> - 地址零值检查优化</li>
+<li><strong><a href="assembly/AssemblyErr.md">AssemblyErr.md</a></strong> - 汇编错误处理优化  </li>
+<li><strong><a href="assembly/Balance.md">Balance.md</a></strong> - 余额查询优化</li>
+<li><strong><a href="assembly/MathOpt.md">MathOpt.md</a></strong> - 数学运算优化</li>
+<li><strong><a href="assembly/MemoryExp.md">MemoryExp.md</a></strong> - 内存扩展优化（包括调用合约、事件、hash等方面）</li>
+</ul>
+<h3 id="⚙️-Compiler-编译器优化"><a href="#⚙️-Compiler-编译器优化" class="headerlink" title="⚙️ Compiler (编译器优化)"></a>⚙️ Compiler (编译器优化)</h3><p>利用Solidity编译器的特性和优化技巧来减少gas消耗。</p>
+<ul>
+<li><strong><a href="compiler/Add.md">Add.md</a></strong> - 加法运算优化</li>
+<li><strong><a href="compiler/CompareHash.md">CompareHash.md</a></strong> - 字符串比较优化</li>
+<li><strong><a href="compiler/Enums.md">Enums.md</a></strong> - 枚举优化</li>
+<li><strong><a href="compiler/Error.md">Error.md</a></strong> - 错误处理优化</li>
+<li><strong><a href="compiler/Exponentiation.md">Exponentiation.md</a></strong> - 指数运算优化</li>
+<li><strong><a href="compiler/Increment.md">Increment.md</a></strong> - 自增运算优化</li>
+<li><strong><a href="compiler/Inequality.md">Inequality.md</a></strong> - 不等式优化</li>
+<li><strong><a href="compiler/Loop.md">Loop.md</a></strong> - 循环优化</li>
+<li><strong><a href="compiler/LookupTableMath.md">LookupTableMath.md</a></strong> - 查找表数学优化</li>
+<li><strong><a href="compiler/MethodID.md">MethodID.md</a></strong> - 方法ID优化</li>
+<li><strong><a href="compiler/MulDiv.md">MulDiv.md</a></strong> - 乘除法优化</li>
+<li><strong><a href="compiler/NameReturn.md">NameReturn.md</a></strong> - 命名返回优化</li>
+<li><strong><a href="compiler/Not.md">Not.md</a></strong> - 逻辑非优化</li>
+<li><strong><a href="compiler/Short.md">Short.md</a></strong> - 短路求值优化</li>
+<li><strong><a href="compiler/Split.md">Split.md</a></strong> - 条件拆分优化</li>
+<li><strong><a href="compiler/Uint.md">Uint.md</a></strong> - 无符号整数比较优化</li>
+<li><strong><a href="compiler/UnChecked.md">UnChecked.md</a></strong> - Unchecked块优化</li>
+<li><strong><a href="compiler/UnRoll.md">UnRoll.md</a></strong> - 循环展开优化</li>
+<li><strong><a href="compiler/Visibility.md">Visibility.md</a></strong> - 可见性优化</li>
+</ul>
+<h3 id="🏗️-Contract-合约设计优化"><a href="#🏗️-Contract-合约设计优化" class="headerlink" title="🏗️ Contract (合约设计优化)"></a>🏗️ Contract (合约设计优化)</h3><p>通过合约架构和设计模式的优化来提升整体效率。</p>
+<ul>
+<li><strong><a href="contract/AccessList.md">AccessList.md</a></strong> - 访问列表优化技术</li>
+<li><strong><a href="contract/Clone.md">Clone.md</a></strong> - EIP-1167 克隆优化技术</li>
+<li><strong><a href="contract/CustomErr.md">CustomErr.md</a></strong> - 自定义错误优化技术</li>
+<li><strong><a href="contract/Deposit.md">Deposit.md</a></strong> - ETH 接收优化技术</li>
+<li><strong><a href="contract/External.md">External.md</a></strong> - 函数可见性优化技术</li>
+<li><strong><a href="contract/Hooks.md">Hooks.md</a></strong> - Hook 回调优化技术</li>
+<li><strong><a href="contract/Inheritance.md">Inheritance.md</a></strong> - 继承优化技术</li>
+<li><strong><a href="contract/Libs.md">Libs.md</a></strong> - 库选择优化技术</li>
+<li><strong><a href="contract/Metadata.md">Metadata.md</a></strong> - 元数据优化技术</li>
+<li><strong><a href="contract/Modifier.md">Modifier.md</a></strong> - 修饰符优化技术</li>
+<li><strong><a href="contract/Monolithic.md">Monolithic.md</a></strong> - 单体架构优化技术</li>
+<li><strong><a href="contract/Multicall.md">Multicall.md</a></strong> - 多重调用优化技术</li>
+<li><strong><a href="contract/Payable.md">Payable.md</a></strong> - Payable 函数优化技术</li>
+<li><strong><a href="contract/PredictAddr.md">PredictAddr.md</a></strong> - 地址预测优化技术</li>
+<li><strong><a href="contract/SafeMath.md">SafeMath.md</a></strong> - SafeMath 优化技术</li>
+<li><strong><a href="contract/Selfdestruct.md">Selfdestruct.md</a></strong> - Selfdestruct 替代方案</li>
+</ul>
+<h3 id="🎨-Patterns-设计模式优化"><a href="#🎨-Patterns-设计模式优化" class="headerlink" title="🎨 Patterns (设计模式优化)"></a>🎨 Patterns (设计模式优化)</h3><p>常见DeFi和Web3应用模式的gas优化技术。</p>
+<ul>
+<li><strong><a href="patterns/AirDrops.md">AirDrops.md</a></strong> - 空投优化 (Merkle vs ECDSA)</li>
+<li><strong><a href="patterns/Erc20s.md">Erc20s.md</a></strong> - 多代币标准优化 (ERC20 vs ERC1155 vs ERC6909)</li>
+<li><strong><a href="patterns/MerkleLib.md">MerkleLib.md</a></strong> - Merkle树库优化</li>
+<li><strong><a href="patterns/Multicalls.md">Multicalls.md</a></strong> - 多重调用优化</li>
+<li><strong><a href="patterns/NFTs.md">NFTs.md</a></strong> - NFT优化 (ERC721 vs ERC1155)</li>
+<li><strong><a href="patterns/Permit.md">Permit.md</a></strong> - Permit优化 (EIP-2612)</li>
+<li><strong><a href="patterns/UUPS.md">UUPS.md</a></strong> - UUPS代理优化</li>
+<li><strong><a href="patterns/Votes.md">Votes.md</a></strong> - 投票系统优化</li>
+</ul>
+<h3 id="💾-Storage-存储优化"><a href="#💾-Storage-存储优化" class="headerlink" title="💾 Storage (存储优化)"></a>💾 Storage (存储优化)</h3><p>存储是智能合约中最昂贵的操作，这里包含各种存储优化策略。</p>
+<ul>
+<li><strong><a href="storage/Pack.md">Pack.md</a></strong> - 结构体打包优化</li>
+<li><strong><a href="storage/Cache.md">Cache.md</a></strong> - 缓存策略优化</li>
+<li><strong><a href="storage/BitMaps.md">BitMaps.md</a></strong> - 位图存储优化</li>
+<li><strong><a href="storage/ByteZero.md">ByteZero.md</a></strong> - 零值特性优化</li>
+<li><strong><a href="storage/Calldata.md">Calldata.md</a></strong> - Calldata vs Memory优化</li>
+<li><strong><a href="storage/Constants.md">Constants.md</a></strong> - 常量与不可变量优化</li>
+<li><strong><a href="storage/GasRefund.md">GasRefund.md</a></strong> - Gas退款机制优化</li>
+<li><strong><a href="storage/InitDefault.md">InitDefault.md</a></strong> - 默认值初始化优化</li>
+<li><strong><a href="storage/Maps.md">Maps.md</a></strong> - 映射与数组选择优化</li>
+<li><strong><a href="storage/Pointer.md">Pointer.md</a></strong> - 存储指针优化</li>
+<li><strong><a href="storage/Sstore.md">Sstore.md</a></strong> - SSTORE2&#x2F;SSTORE3优化</li>
+<li><strong><a href="storage/StringShort.md">StringShort.md</a></strong> - 短字符串存储优化</li>
+<li><strong><a href="storage/Transient.md">Transient.md</a></strong> - 瞬态存储优化</li>
+<li><strong><a href="storage/Types.md">Types.md</a></strong> - 数据类型选择优化</li>
+<li><strong><a href="storage/Zero.md">Zero.md</a></strong> - 零值避免优化</li>
+</ul>
+<h3 id="🔮-Unorthodox-非常规优化"><a href="#🔮-Unorthodox-非常规优化" class="headerlink" title="🔮 Unorthodox (非常规优化)"></a>🔮 Unorthodox (非常规优化)</h3><p>一些创新和实验性的优化技术。</p>
+<ul>
+<li><strong><a href="storage/Sstore.md">gasprice.md</a></strong> - gasprice()&amp;msg.value优化</li>
+<li><strong><a href="storage/StringShort.md">gasleft.md</a></strong> - gasleft()优化</li>
+<li><strong><a href="storage/Transient.md">payable.md</a></strong> - payable优化</li>
+<li><strong><a href="storage/Types.md">Jump.md</a></strong> - 外部库跳转优化</li>
+<li><strong><a href="storage/Zero.md">Bytes.md</a></strong> - 字节码优化</li>
+</ul>
+<h2 id="📊-优化效果对比"><a href="#📊-优化效果对比" class="headerlink" title="📊 优化效果对比"></a>📊 优化效果对比</h2><table>
+<thead>
+<tr>
+<th>优化类型</th>
+<th>平均节省</th>
+<th>适用场景</th>
+<th>实现难度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>汇编优化</td>
+<td>15-30%</td>
+<td>底层操作</td>
+<td>高</td>
+</tr>
+<tr>
+<td>编译器优化</td>
+<td>10-20%</td>
+<td>通用场景</td>
+<td>中</td>
+</tr>
+<tr>
+<td>存储优化</td>
+<td>20-60%</td>
+<td>存储密集</td>
+<td>中</td>
+</tr>
+<tr>
+<td>设计模式优化</td>
+<td>35-50%</td>
+<td>特定场景</td>
+<td>低-中</td>
+</tr>
+<tr>
+<td>合约设计优化</td>
+<td>25-40%</td>
+<td>架构层面</td>
+<td>中-高</td>
+</tr>
+</tbody></table>
+<h2 id="🎯-使用指南"><a href="#🎯-使用指南" class="headerlink" title="🎯 使用指南"></a>🎯 使用指南</h2><h3 id="1-新手入门"><a href="#1-新手入门" class="headerlink" title="1. 新手入门"></a>1. 新手入门</h3><p>建议从以下文档开始：</p>
+<ul>
+<li><a href="compiler/Error.md">Error.md</a> - 了解基本的错误处理优化</li>
+<li><a href="compiler/Loop.md">Loop.md</a> - 学习循环优化技巧</li>
+<li><a href="patterns/AirDrops.md">AirDrops.md</a> - 理解实际应用场景</li>
+</ul>
+<h3 id="2-进阶学习"><a href="#2-进阶学习" class="headerlink" title="2. 进阶学习"></a>2. 进阶学习</h3><p>深入了解底层优化：</p>
+<ul>
+<li><a href="assembly/MathOpt.md">MathOpt.md</a> - 数学运算的汇编优化</li>
+<li><a href="assembly/MemoryExp.md">MemoryExp.md</a> - 内存管理优化</li>
+<li><a href="assembly/Balance.md">Balance.md</a> - 余额查询优化</li>
+</ul>
+<h3 id="3-实战应用"><a href="#3-实战应用" class="headerlink" title="3. 实战应用"></a>3. 实战应用</h3><p>结合具体项目需求：</p>
+<ul>
+<li><a href="patterns/Erc20s.md">Erc20s.md</a> - 多代币系统设计</li>
+<li>存储优化技术 - 针对数据密集型应用</li>
+</ul>
+<h2 id="🛠️-实践建议"><a href="#🛠️-实践建议" class="headerlink" title="🛠️ 实践建议"></a>🛠️ 实践建议</h2><h3 id="优化优先级"><a href="#优化优先级" class="headerlink" title="优化优先级"></a>优化优先级</h3><ol>
+<li><strong>高影响低成本</strong>: 编译器优化、简单的存储优化</li>
+<li><strong>高影响高成本</strong>: 汇编优化、架构重构</li>
+<li><strong>低影响低成本</strong>: 代码风格优化、小幅改进</li>
+<li><strong>低影响高成本</strong>: 过度优化、复杂的汇编代码</li>
+</ol>
+<h3 id="测试策略"><a href="#测试策略" class="headerlink" title="测试策略"></a>测试策略</h3><ul>
+<li>使用Foundry的gas报告功能</li>
+<li>对比优化前后的gas消耗</li>
+<li>进行模糊测试验证正确性</li>
+<li>测试边界条件和异常情况</li>
+</ul>
+<h3 id="安全考虑"><a href="#安全考虑" class="headerlink" title="安全考虑"></a>安全考虑</h3><ul>
+<li>汇编代码需要额外的安全审计</li>
+<li>优化不应该牺牲代码的可读性</li>
+<li>充分的单元测试覆盖</li>
+<li>考虑升级和维护成本</li>
+</ul>
+<h2 id="📈-性能基准"><a href="#📈-性能基准" class="headerlink" title="📈 性能基准"></a>📈 性能基准</h2><p>基于实际测试的优化效果：</p>
+<h3 id="空投系统"><a href="#空投系统" class="headerlink" title="空投系统"></a>空投系统</h3><ul>
+<li>Merkle树 vs ECDSA: 节省约6-8%的gas</li>
+<li>批量操作: 节省40-70%的gas</li>
+</ul>
+<h3 id="多代币系统"><a href="#多代币系统" class="headerlink" title="多代币系统"></a>多代币系统</h3><ul>
+<li>ERC6909 vs 多个ERC20: 节省约50-60%的部署成本</li>
+<li>批量转账: 节省30-50%的操作成本</li>
+</ul>
+<h3 id="循环优化"><a href="#循环优化" class="headerlink" title="循环优化"></a>循环优化</h3><ul>
+<li>unchecked块: 节省15-20%的循环成本</li>
+<li>缓存数组长度: 节省5-10%的gas</li>
+</ul>
+<h2 id="🔗-相关资源"><a href="#🔗-相关资源" class="headerlink" title="🔗 相关资源"></a>🔗 相关资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/">Foundry文档</a> - 测试和部署工具</li>
+<li><a target="_blank" rel="noopener" href="https://docs.soliditylang.org/">Solidity文档</a> - 语言参考</li>
+<li><a target="_blank" rel="noopener" href="https://www.evm.codes/">EVM操作码参考</a> - 底层指令参考</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/iskdrews/awesome-solidity-gas-optimization">Gas优化最佳实践</a></li>
+</ul>
+<h2 id="⚠️-免责声明"><a href="#⚠️-免责声明" class="headerlink" title="⚠️ 免责声明"></a>⚠️ 免责声明</h2><p>本文档中的优化技术仅供学习和参考。在生产环境中使用前，请：</p>
+<ul>
+<li>进行充分的测试和审计</li>
+<li>考虑代码的可维护性</li>
+<li>评估优化的实际收益</li>
+<li>确保不会引入安全漏洞</li>
+</ul>
+<hr>
+<p><strong>持续更新中… 🚀</strong></p>
+<p>如有问题或建议，欢迎提出Issue或Pull Request。</p>
+
+</div>
+
+
+  <div class="book-comments">
+    
+
+
+
+
+  </div>
+
+
+
+<script src="/js/book-post.js"></script>
+
+        </div>
+      </div>
+      <div class="column col-2 hide-lg">
+        <div class="book-post-info">
+  
+    <div class="book-post-meta">
+
+  <div class="author">
+
+    <!-- Author image -->
+    <div class="author-img">
+      
+        <figure
+          class="avatar avatar-lg"
+          data-initial="K"
+          style="background-color: #3b4351;">
+        </figure>
+      
+    </div>
+
+    <!-- Author title -->
+    <div class="author-title">
+      <div>Kent</div>
+      <div>2025-10-20</div>
+    </div>
+  </div>
+
+  
+    <div class="divider"></div>
+
+    <div class="link">
+      <a class="category-link" href="/categories/Gas%E4%BC%98%E5%8C%96/">Gas优化</a>
+
+      <a class="tag-none-link" href="/tags/Gas%E4%BC%98%E5%8C%96/" rel="tag">#Gas优化</a> <a class="tag-none-link" href="/tags/Solidity/" rel="tag">#Solidity</a> <a class="tag-none-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">#性能优化</a> <a class="tag-none-link" href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/" rel="tag">#智能合约</a>
+    </div>
+    
+  
+
+  <div class="divider"></div>
+</div>
+  
+
+  <div class="book-tocbot">
+</div>
+<div class="book-tocbot-menu">
+  <a class="book-toc-expand" onclick="expand_toc()">Expand all</a>
+  <a onclick="go_top()">Back to top</a>
+  <a onclick="go_bottom()">Go to bottom</a>
+</div>
+
+
+<script src="/js/book-toc.js"></script>
+
+</div>
+      </div>
+    </div>
+  </div>
+  
+  <a class="off-canvas-overlay" onclick="hide_canvas()"></a>
+</div>
+
+</body>
+</html>
+
+
+<script src="/js/book.js"></script>
